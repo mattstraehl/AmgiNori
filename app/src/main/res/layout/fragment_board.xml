@@ -1,0 +1,287 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.matthias.android.amginori.CustomLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/relative_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_vertical"
+    android:keepScreenOn="true"
+    android:orientation="vertical">
+
+    <HorizontalScrollView
+        android:id="@+id/scroll_view_0"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="1dp"
+        android:fadeScrollbars="false">
+
+        <LinearLayout
+            android:id="@+id/row_0"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:animateLayoutChanges="true"
+            android:orientation="horizontal">
+
+            <com.matthias.android.amginori.Tile
+                android:layout_width="wrap_content"
+                android:layout_height="60dp"
+                android:layout_marginLeft="1dp"
+                android:layout_marginRight="1dp" />
+
+            <com.matthias.android.amginori.Tile
+                android:layout_width="wrap_content"
+                android:layout_height="60dp"
+                android:layout_marginLeft="1dp"
+                android:layout_marginRight="1dp" />
+
+            <com.matthias.android.amginori.Tile
+                android:layout_width="wrap_content"
+                android:layout_height="60dp"
+                android:layout_marginLeft="1dp"
+                android:layout_marginRight="1dp" />
+
+            <com.matthias.android.amginori.Tile
+                android:layout_width="wrap_content"
+                android:layout_height="60dp"
+                android:layout_marginLeft="3dp"
+                android:layout_marginRight="3dp" />
+
+            <com.matthias.android.amginori.Tile
+                android:layout_width="wrap_content"
+                android:layout_height="60dp"
+                android:layout_marginLeft="1dp"
+                android:layout_marginRight="1dp" />
+
+            <com.matthias.android.amginori.Tile
+                android:layout_width="wrap_content"
+                android:layout_height="60dp"
+                android:layout_marginLeft="1dp"
+                android:layout_marginRight="1dp" />
+
+            <com.matthias.android.amginori.Tile
+                android:layout_width="wrap_content"
+                android:layout_height="60dp"
+                android:layout_marginLeft="1dp"
+                android:layout_marginRight="1dp" />
+
+            <com.matthias.android.amginori.Tile
+                android:layout_width="wrap_content"
+                android:layout_height="60dp"
+                android:layout_marginLeft="1dp"
+                android:layout_marginRight="1dp" />
+
+            <com.matthias.android.amginori.Tile
+                android:layout_width="wrap_content"
+                android:layout_height="60dp"
+                android:layout_marginLeft="1dp"
+                android:layout_marginRight="1dp" />
+
+        </LinearLayout>
+
+    </HorizontalScrollView>
+
+    <HorizontalScrollView
+        android:id="@+id/scroll_view_1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/scroll_view_0"
+        android:layout_margin="1dp"
+        android:fadeScrollbars="false">
+
+        <LinearLayout
+            android:id="@+id/row_1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:animateLayoutChanges="true"
+            android:orientation="horizontal">
+
+            <com.matthias.android.amginori.Tile
+                android:layout_width="wrap_content"
+                android:layout_height="60dp"
+                android:layout_marginLeft="1dp"
+                android:layout_marginRight="1dp" />
+
+            <com.matthias.android.amginori.Tile
+                android:layout_width="wrap_content"
+                android:layout_height="60dp"
+                android:layout_marginLeft="1dp"
+                android:layout_marginRight="1dp" />
+
+            <com.matthias.android.amginori.Tile
+                android:layout_width="wrap_content"
+                android:layout_height="60dp"
+                android:layout_marginLeft="1dp"
+                android:layout_marginRight="1dp" />
+
+            <com.matthias.android.amginori.Tile
+                android:layout_width="wrap_content"
+                android:layout_height="60dp"
+                android:layout_marginLeft="3dp"
+                android:layout_marginRight="3dp" />
+
+            <com.matthias.android.amginori.Tile
+                android:layout_width="wrap_content"
+                android:layout_height="60dp"
+                android:layout_marginLeft="1dp"
+                android:layout_marginRight="1dp" />
+
+            <com.matthias.android.amginori.Tile
+                android:layout_width="wrap_content"
+                android:layout_height="60dp"
+                android:layout_marginLeft="1dp"
+                android:layout_marginRight="1dp" />
+
+            <com.matthias.android.amginori.Tile
+                android:layout_width="wrap_content"
+                android:layout_height="60dp"
+                android:layout_marginLeft="1dp"
+                android:layout_marginRight="1dp" />
+
+            <com.matthias.android.amginori.Tile
+                android:layout_width="wrap_content"
+                android:layout_height="60dp"
+                android:layout_marginLeft="1dp"
+                android:layout_marginRight="1dp" />
+
+            <com.matthias.android.amginori.Tile
+                android:layout_width="wrap_content"
+                android:layout_height="60dp"
+                android:layout_marginLeft="1dp"
+                android:layout_marginRight="1dp" />
+
+        </LinearLayout>
+
+    </HorizontalScrollView>
+
+    <HorizontalScrollView
+        android:id="@+id/scroll_view_2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/scroll_view_1"
+        android:layout_margin="1dp"
+        android:fadeScrollbars="false">
+
+        <LinearLayout
+            android:id="@+id/row_2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:animateLayoutChanges="true"
+            android:orientation="horizontal">
+
+            <com.matthias.android.amginori.Tile
+                android:layout_width="wrap_content"
+                android:layout_height="60dp"
+                android:layout_marginLeft="1dp"
+                android:layout_marginRight="1dp" />
+
+            <com.matthias.android.amginori.Tile
+                android:layout_width="wrap_content"
+                android:layout_height="60dp"
+                android:layout_marginLeft="1dp"
+                android:layout_marginRight="1dp" />
+
+            <com.matthias.android.amginori.Tile
+                android:layout_width="wrap_content"
+                android:layout_height="60dp"
+                android:layout_marginLeft="1dp"
+                android:layout_marginRight="1dp" />
+
+            <com.matthias.android.amginori.Tile
+                android:layout_width="wrap_content"
+                android:layout_height="60dp"
+                android:layout_marginLeft="3dp"
+                android:layout_marginRight="3dp" />
+
+            <com.matthias.android.amginori.Tile
+                android:layout_width="wrap_content"
+                android:layout_height="60dp"
+                android:layout_marginLeft="1dp"
+                android:layout_marginRight="1dp" />
+
+            <com.matthias.android.amginori.Tile
+                android:layout_width="wrap_content"
+                android:layout_height="60dp"
+                android:layout_marginLeft="1dp"
+                android:layout_marginRight="1dp" />
+
+            <com.matthias.android.amginori.Tile
+                android:layout_width="wrap_content"
+                android:layout_height="60dp"
+                android:layout_marginLeft="1dp"
+                android:layout_marginRight="1dp" />
+
+            <com.matthias.android.amginori.Tile
+                android:layout_width="wrap_content"
+                android:layout_height="60dp"
+                android:layout_marginLeft="1dp"
+                android:layout_marginRight="1dp" />
+
+            <com.matthias.android.amginori.Tile
+                android:layout_width="wrap_content"
+                android:layout_height="60dp"
+                android:layout_marginLeft="1dp"
+                android:layout_marginRight="1dp" />
+
+        </LinearLayout>
+
+    </HorizontalScrollView>
+
+    <TextView
+        android:id="@+id/best_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_below="@id/scroll_view_2"
+        android:paddingEnd="25dp"
+        android:paddingRight="25dp"
+        android:paddingTop="10dp"
+        android:text="@string/best" />
+
+    <TextView
+        android:id="@+id/slash_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/scroll_view_2"
+        android:layout_toLeftOf="@id/best_label"
+        android:layout_toStartOf="@id/best_label"
+        android:paddingEnd="10dp"
+        android:paddingRight="10dp"
+        android:paddingTop="10dp"
+        android:text="|" />
+
+    <TextView
+        android:id="@+id/score_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/scroll_view_2"
+        android:layout_toLeftOf="@id/slash_label"
+        android:layout_toStartOf="@id/slash_label"
+        android:paddingEnd="10dp"
+        android:paddingRight="10dp"
+        android:paddingTop="10dp"
+        android:text="@string/score" />
+
+    <TextView
+        android:id="@+id/best_score"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_below="@id/best_label"
+        android:paddingEnd="25dp"
+        android:paddingRight="25dp"
+        android:paddingTop="5dp" />
+
+    <TextView
+        android:id="@+id/current_score"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignEnd="@id/score_label"
+        android:layout_alignRight="@id/score_label"
+        android:layout_below="@id/score_label"
+        android:paddingEnd="10dp"
+        android:paddingRight="10dp"
+        android:paddingTop="5dp"
+        android:textStyle="bold" />
+
+</com.matthias.android.amginori.CustomLayout>

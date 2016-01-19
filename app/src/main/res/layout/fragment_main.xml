@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="24dp">
+
+    <TextView
+        android:id="@+id/new_game"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="15dp"
+        android:text="@string/new_game"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <RadioGroup
+        android:id="@+id/level"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@id/new_game"
+        android:layout_toRightOf="@id/new_game"
+        android:orientation="vertical"
+        android:padding="15dp">
+
+        <RadioButton
+            android:id="@+id/option_easy"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:text="@string/option_easy" />
+
+        <RadioButton
+            android:id="@+id/option_hard"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/option_hard" />
+
+    </RadioGroup>
+
+    <Button
+        android:id="@+id/start_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/level"
+        android:layout_toEndOf="@id/new_game"
+        android:layout_toRightOf="@id/new_game"
+        android:text="@string/start_button" />
+
+    <Button
+        android:id="@+id/resume_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/level"
+        android:layout_toEndOf="@id/start_button"
+        android:layout_toRightOf="@id/start_button"
+        android:text="@string/resume_button" />
+
+    <TextView
+        android:id="@+id/new_card"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/start_button"
+        android:padding="15dp"
+        android:text="@string/new_card"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <EditText
+        android:id="@+id/front_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/new_card"
+        android:layout_toEndOf="@id/new_card"
+        android:layout_toRightOf="@id/new_card"
+        android:ems="11"
+        android:inputType="text"
+        android:text="@string/front_text"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
+
+    <EditText
+        android:id="@+id/back_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/front_text"
+        android:layout_toEndOf="@id/new_card"
+        android:layout_toRightOf="@id/new_card"
+        android:ems="11"
+        android:inputType="text"
+        android:text="@string/back_text"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
+
+    <Button
+        android:id="@+id/add_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignEnd="@id/resume_button"
+        android:layout_alignRight="@id/resume_button"
+        android:layout_below="@id/back_text"
+        android:text="@string/add_button" />
+
+    <TextView
+        android:id="@+id/import_cards"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/add_button"
+        android:padding="15dp"
+        android:text="@string/import_cards"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <Button
+        android:id="@+id/import_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignEnd="@id/resume_button"
+        android:layout_alignRight="@id/resume_button"
+        android:layout_below="@id/import_cards"
+        android:text="@string/import_button"
+        android:onClick=""/>
+
+</RelativeLayout>
