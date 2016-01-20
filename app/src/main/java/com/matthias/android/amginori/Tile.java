@@ -11,11 +11,14 @@ public class Tile extends Button implements Card.CardObserver {
 
     private Card mCard;
 
+    private Card.CardObserver mNext;
+
     public static final LightingColorFilter MATERIAL_GREY_500 = new LightingColorFilter(0xffa3a3a3, 0x000000);
     public static final LightingColorFilter MATERIAL_DEEP_ORANGE_700 = new LightingColorFilter(0xffc53929, 0x000000);
 
     public Tile(Context context, AttributeSet attrs) {
         super(context, attrs);
+        setTransformationMethod(null);
     }
 
     public void initValues(List<Card> cards) {
@@ -57,5 +60,15 @@ public class Tile extends Button implements Card.CardObserver {
         } else if (card.isDisabled()) {
             getBackground().setColorFilter(Tile.MATERIAL_DEEP_ORANGE_700);
         }
+    }
+
+    @Override
+    public Card.CardObserver getNext() {
+        return mNext;
+    }
+
+    @Override
+    public void setNext(Card.CardObserver next) {
+        mNext = next;
     }
 }

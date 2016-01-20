@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.graphics.Point;
-import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.support.v4.app.Fragment;
@@ -21,7 +20,6 @@ import android.widget.HorizontalScrollView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.NavigableMap;
 import java.util.TreeMap;
 
@@ -38,18 +36,18 @@ public class BoardFragment extends Fragment {
     private Tile mSelected0;
     private Tile mSelected1;
 
-    private Bar mBar0;
-    private Bar mBar1;
-    private Bar mBar2;
+    private TileBar mTileBar0;
+    private TileBar mTileBar1;
+    private TileBar mTileBar2;
 
-    private NavigableMap<Integer, Bar> mBars = new TreeMap<>();
+    private NavigableMap<Integer, TileBar> mBars = new TreeMap<>();
 
     private CustomLayout mLayout;
     private TextView mScoreView;
 
     private Vibrator mVibrator;
 
-    private static final String PREFS_NAME = "AmgiNoriPrefsFile";
+    private static final String PREFS_NAME = "AmgiNoriPrefs";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -72,9 +70,9 @@ public class BoardFragment extends Fragment {
         outState.putInt("mScore", mScore);
         outState.putInt("mBestScore", mBestScore);
         outState.putParcelableArrayList("mCards", mCards);
-        outState.putParcelableArrayList("mBar0", mBar0.getCards());
-        outState.putParcelableArrayList("mBar1", mBar1.getCards());
-        outState.putParcelableArrayList("mBar2", mBar2.getCards());
+        outState.putParcelableArrayList("mTileBar0", mTileBar0.getCards());
+        outState.putParcelableArrayList("mTileBar1", mTileBar1.getCards());
+        outState.putParcelableArrayList("mTileBar2", mTileBar2.getCards());
     }
 
     @Override
@@ -121,16 +119,16 @@ public class BoardFragment extends Fragment {
         view.post(new Runnable() {
             @Override
             public void run() {
-                mBars.put(mBar0.getScrollView().getTop(), mBar0);
-                mBars.put(mBar1.getScrollView().getTop(), mBar1);
-                mBars.put(mBar2.getScrollView().getTop(), mBar2);
+                mBars.put(mTileBar0.getScrollView().getTop(), mTileBar0);
+                mBars.put(mTileBar1.getScrollView().getTop(), mTileBar1);
+                mBars.put(mTileBar2.getScrollView().getTop(), mTileBar2);
                 mVibrator = (Vibrator) getContext().getSystemService(Context.VIBRATOR_SERVICE);
             }
         });
 
-        mBar0 = new Bar((HorizontalScrollView) view.findViewById(R.id.scroll_view_0));
-        mBar1 = new Bar((HorizontalScrollView) view.findViewById(R.id.scroll_view_1));
-        mBar2 = new Bar((HorizontalScrollView) view.findViewById(R.id.scroll_view_2));
+        mTileBar0 = new TileBar((HorizontalScrollView) view.findViewById(R.id.scroll_view_0));
+        mTileBar1 = new TileBar((HorizontalScrollView) view.findViewById(R.id.scroll_view_1));
+        mTileBar2 = new TileBar((HorizontalScrollView) view.findViewById(R.id.scroll_view_2));
 
         view.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -140,29 +138,28 @@ public class BoardFragment extends Fragment {
                     case MotionEvent.ACTION_MOVE:
                         mLayout.mPoints.add(new Point((int) event.getX(), (int) event.getY()));
                         getView().invalidate();
-                        Bar bar;
+                        TileBar tileBar;
                         if (outOfBounds(event)) {
                             return true;
                         } else {
-                            bar = mBars.floorEntry((int) event.getY()).getValue();
+                            tileBar = mBars.floorEntry((int) event.getY()).getValue();
                         }
-                        for (Tile tile : bar.getTiles()) {
-                            if (contains(tile, bar.getScrollView(), event)) {
-                                if (tile == mSelected0 || tile == mSelected1) {
-                                    return true;
-                                }
-                                if (mSelected0 == null) {
-                                    mSelected0 = tile;
-                                    mSelected0.getCard().marked();
-                                    mFirstY = event.getY();
-                                } else if (mSelected1 == null) {
-                                    if (!mBars.floorEntry((int) mFirstY).getKey().equals(mBars.floorEntry((int) event.getY()).getKey())) {
-                                        mSelected1 = tile;
-                                        mSelected1.getCard().marked();
-                                    }
-                                }
-                                break;
+                        Tile tile = tileBar.maybeOneTileContains((int) event.getX(), (int) event.getY());
+                        if (tile != null) {
+                            if (tile == mSelected0 || tile == mSelected1) {
+                                return true;
                             }
+                            if (mSelected0 == null) {
+                                mSelected0 = tile;
+                                mSelected0.getCard().marked();
+                                mFirstY = event.getY();
+                            } else if (mSelected1 == null) {
+                                if (!mBars.floorEntry((int) mFirstY).getKey().equals(mBars.floorEntry((int) event.getY()).getKey())) {
+                                    mSelected1 = tile;
+                                    mSelected1.getCard().marked();
+                                }
+                            }
+                            break;
                         }
                         break;
                     case MotionEvent.ACTION_UP:
@@ -188,27 +185,14 @@ public class BoardFragment extends Fragment {
             }
         });
 
-        ViewGroup tiles = (ViewGroup) view.findViewById(R.id.row_0);
-        for (int i = 0; i < tiles.getChildCount(); i++) {
-            mBar0.getTiles().add((Tile) tiles.getChildAt(i));
-        }
-        tiles = (ViewGroup) view.findViewById(R.id.row_1);
-        for (int i = 0; i < tiles.getChildCount(); i++) {
-            mBar1.getTiles().add((Tile) tiles.getChildAt(i));
-        }
-        tiles = (ViewGroup) view.findViewById(R.id.row_2);
-        for (int i = 0; i < tiles.getChildCount(); i++) {
-            mBar2.getTiles().add((Tile) tiles.getChildAt(i));
-        }
-
         if (savedInstanceState == null) {
-            mBar0.initCards(mCards);
-            mBar1.initCards(mCards);
-            mBar2.initCards(mCards);
+            mTileBar0.initCards(mCards);
+            mTileBar1.initCards(mCards);
+            mTileBar2.initCards(mCards);
         } else {
-            mBar0.setCards(savedInstanceState.<Card>getParcelableArrayList("mBar0"));
-            mBar1.setCards(savedInstanceState.<Card>getParcelableArrayList("mBar1"));
-            mBar2.setCards(savedInstanceState.<Card>getParcelableArrayList("mBar2"));
+            mTileBar0.setCards(savedInstanceState.<Card>getParcelableArrayList("mTileBar0"));
+            mTileBar1.setCards(savedInstanceState.<Card>getParcelableArrayList("mTileBar1"));
+            mTileBar2.setCards(savedInstanceState.<Card>getParcelableArrayList("mTileBar2"));
         }
 
         mLayout = (CustomLayout) view.findViewById(R.id.relative_layout);
@@ -221,14 +205,7 @@ public class BoardFragment extends Fragment {
     }
 
     private boolean outOfBounds(MotionEvent event) {
-        return event.getY() < mBar0.getScrollView().getTop() || event.getY() > (mBar2.getScrollView().getTop()) + mBar2.getScrollView().getHeight();
-    }
-
-    private boolean contains(Tile tile, HorizontalScrollView sv, MotionEvent event) {
-        Rect rect = new Rect();
-        tile.getHitRect(rect);
-        rect.inset(25, 25);
-        return tile.isEnabled() && rect.contains((int) event.getX() + sv.getScrollX(), (int) (event.getY() - sv.getTop()));
+        return event.getY() < mTileBar0.getScrollView().getTop() || event.getY() > (mTileBar2.getScrollView().getTop()) + mTileBar2.getScrollView().getHeight();
     }
 
     private void notifyMatch() {
@@ -247,7 +224,7 @@ public class BoardFragment extends Fragment {
     private void updateScore() {
         mScore += mLevel;
         if (mScore % 9 == 0) {
-            mCards.addAll(CardLibrary.getRandomCards(2));
+            mCards.addAll(CardLibrary.getRandomCards(mLevel));
         }
         mScoreView.setText(Integer.toString(mScore));
     }
@@ -266,25 +243,14 @@ public class BoardFragment extends Fragment {
     }
 
     private boolean matchAvailable() {
-        if (matchAvailable(mBar0.getTiles(), mBar1.getTiles())) {
+        if (mTileBar0.matchAvailable(mTileBar1)) {
             return true;
         }
-        if (matchAvailable(mBar1.getTiles(), mBar2.getTiles())) {
+        if (mTileBar1.matchAvailable(mTileBar2)) {
             return true;
         }
-        if (matchAvailable(mBar0.getTiles(), mBar2.getTiles())) {
+        if (mTileBar0.matchAvailable(mTileBar2)) {
             return true;
-        }
-        return false;
-    }
-
-    private boolean matchAvailable(List<Tile> list0, List<Tile> list1) {
-        for (Tile tile0 : list0) {
-            for (Tile tile1 : list1) {
-                if (tile0.match(tile1)) {
-                    return true;
-                }
-            }
         }
         return false;
     }
@@ -310,8 +276,8 @@ public class BoardFragment extends Fragment {
         mScore = 0;
         mCards = CardLibrary.getRandomCards(mLevel);
         mScoreView.setText(Integer.toString(mScore));
-        mBar0.reset(mCards);
-        mBar1.reset(mCards);
-        mBar2.reset(mCards);
+        mTileBar0.reset(mCards);
+        mTileBar1.reset(mCards);
+        mTileBar2.reset(mCards);
     }
 }

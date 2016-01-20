@@ -3,9 +3,6 @@ package com.matthias.android.amginori;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.util.LinkedList;
-import java.util.List;
-
 public final class Card implements Parcelable {
 
     private enum CardState {
@@ -19,7 +16,7 @@ public final class Card implements Parcelable {
 
     private final CardState mCardState;
 
-    private final List<CardObserver> mObservers = new LinkedList<>();
+    private CardObserver mHead;
 
     public Card(String front, String back) {
         this(front, back, Math.random() < 0.5 ? true : false, CardState.ACTIVE);
@@ -43,28 +40,28 @@ public final class Card implements Parcelable {
 
     public Card active() {
         Card result = new Card(mFront, mBack, mShowFront, CardState.ACTIVE);
-        result.mObservers.addAll(mObservers);
+        result.mHead = mHead;
         notifyObservers(result);
         return result;
     }
 
     public Card marked() {
         Card result = new Card(mFront, mBack, mShowFront, CardState.MARKED);
-        result.mObservers.addAll(mObservers);
+        result.mHead = mHead;
         notifyObservers(result);
         return result;
     }
 
     public Card disabled() {
         Card result = new Card(mFront, mBack, mShowFront, CardState.DISABLED);
-        result.mObservers.addAll(mObservers);
+        result.mHead = mHead;
         notifyObservers(result);
         return result;
     }
 
     public Card copied() {
         Card result = new Card(mFront, mBack, mShowFront, mCardState);
-        result.mObservers.addAll(mObservers);
+        result.mHead = mHead;
         notifyObservers(result);
         return result;
     }
@@ -127,16 +124,21 @@ public final class Card implements Parcelable {
     }
 
     private void notifyObservers(Card card) {
-        for (CardObserver observer : mObservers) {
+        CardObserver observer = mHead;
+        while (observer != null) {
             observer.onNotify(card);
+            observer = observer.getNext();
         }
     }
 
     public void addObserver(CardObserver observer) {
-        mObservers.add(observer);
+        observer.setNext(mHead);
+        mHead = observer;
     }
 
     public interface CardObserver {
         void onNotify(Card card);
+        CardObserver getNext();
+        void setNext(CardObserver next);
     }
 }

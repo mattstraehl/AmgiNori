@@ -15,7 +15,7 @@
         android:fadeScrollbars="false">
 
         <LinearLayout
-            android:id="@+id/row_0"
+            android:id="@+id/tile_bar_0"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:animateLayoutChanges="true"
@@ -88,7 +88,7 @@
         android:fadeScrollbars="false">
 
         <LinearLayout
-            android:id="@+id/row_1"
+            android:id="@+id/tile_bar_1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:animateLayoutChanges="true"
@@ -161,7 +161,7 @@
         android:fadeScrollbars="false">
 
         <LinearLayout
-            android:id="@+id/row_2"
+            android:id="@+id/tile_bar_2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:animateLayoutChanges="true"
