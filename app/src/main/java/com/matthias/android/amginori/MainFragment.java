@@ -1,8 +1,10 @@
 package com.matthias.android.amginori;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
@@ -28,6 +30,8 @@ public class MainFragment extends Fragment {
     private Button mResumeButton;
     private EditText mFront;
     private EditText mBack;
+
+    ProgressDialog mProgress;
 
     private static final int FILE_SELECT_CODE = 0;
 
@@ -116,6 +120,11 @@ public class MainFragment extends Fragment {
         mStartButton.setFocusableInTouchMode(true);
         mStartButton.requestFocus();
 
+        mProgress = new ProgressDialog(view.getContext());
+        mProgress.setCancelable(false);
+        mProgress.setMessage("Loading...");
+        mProgress.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+
         updateSubtitle();
 
         return view;
@@ -128,17 +137,8 @@ public class MainFragment extends Fragment {
         }
         if (requestCode == FILE_SELECT_CODE) {
             Uri uri = data.getData();
-
-            if (AnkiPackageImporter.importAnkiPackage(getActivity(), Anki2DbHelper.DATABASE_NAME, uri)) {
-                CardLibrary.get(getActivity().getApplicationContext()).refresh();
-                SharedPreferencesHelper.get(getActivity()).remove("mBestScore");
-                updateSubtitle();
-                Toast.makeText(getActivity(), CardLibrary.get(getActivity()).size() + " cards imported.", Toast.LENGTH_LONG).show();
-            } else {
-                getActivity().getApplicationContext().deleteDatabase(Anki2DbHelper.DATABASE_NAME);
-                Toast.makeText(getActivity(), "Selected file is not a valid Anki Package.", Toast.LENGTH_LONG).show();
-            }
-
+            mProgress.show();
+            new ImportTask().execute(uri);
         }
     }
 
@@ -156,6 +156,27 @@ public class MainFragment extends Fragment {
             case R.id.option_hard:
                 if (checked)
                     break;
+        }
+    }
+
+    private class ImportTask extends AsyncTask<Uri, Void, Boolean> {
+
+        @Override
+        protected Boolean doInBackground(Uri... uris) {
+            return AnkiPackageImporter.importAnkiPackage(getActivity(), Anki2DbHelper.DATABASE_NAME, uris[0]);
+        }
+
+        @Override
+        protected void onPostExecute(Boolean result) {
+            if (result) {
+                CardLibrary.get(getActivity().getApplicationContext()).refresh();
+                SharedPreferencesHelper.get(getActivity()).remove("mBestScore");
+                updateSubtitle();
+                Toast.makeText(getActivity(), CardLibrary.get(getActivity()).size() + " cards imported.", Toast.LENGTH_LONG).show();
+            } else {
+                Toast.makeText(getActivity(), "Selected file is not a valid Anki Package.", Toast.LENGTH_LONG).show();
+            }
+            mProgress.dismiss();
         }
     }
 }
