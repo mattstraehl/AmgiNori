@@ -2,7 +2,6 @@ package com.matthias.android.amginori;
 
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.SharedPreferences;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.os.Vibrator;
@@ -18,6 +17,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.HorizontalScrollView;
 import android.widget.TextView;
+
+import com.matthias.android.amginori.persistence.SharedPreferencesHelper;
 
 import java.util.ArrayList;
 import java.util.NavigableMap;
@@ -44,10 +45,9 @@ public class BoardFragment extends Fragment {
 
     private CustomLayout mLayout;
     private TextView mScoreView;
+    private TextView mBestScoreView;
 
     private Vibrator mVibrator;
-
-    private static final String PREFS_NAME = "AmgiNoriPrefs";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -58,9 +58,8 @@ public class BoardFragment extends Fragment {
             mBestScore = savedInstanceState.getInt("mBestScore", 0);
             mCards = savedInstanceState.getParcelableArrayList("mCards");
         } else {
-            SharedPreferences settings = getActivity().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-            mBestScore = settings.getInt("bestScore", 0);
-            mCards = CardLibrary.getRandomCards(mLevel);
+            mBestScore = SharedPreferencesHelper.get(getActivity()).getInt("mBestScore", 0);
+            mCards = CardLibrary.get(getActivity()).getRandomCards(mLevel);
         }
     }
 
@@ -76,14 +75,12 @@ public class BoardFragment extends Fragment {
     }
 
     @Override
-    public void onStop(){
+    public void onStop() {
         super.onStop();
         if (mScore > mBestScore) {
-            SharedPreferences settings = getActivity().getSharedPreferences(PREFS_NAME, 0);
-            SharedPreferences.Editor editor = settings.edit();
-            editor.putInt("bestScore", mScore);
-            editor.commit();
+            mBestScore = mScore;
         }
+        SharedPreferencesHelper.get(getActivity()).putInt("mBestScore", mBestScore);
     }
 
     @Override
@@ -198,8 +195,8 @@ public class BoardFragment extends Fragment {
         mLayout = (CustomLayout) view.findViewById(R.id.relative_layout);
         mScoreView = (TextView) view.findViewById(R.id.current_score);
         mScoreView.setText(Integer.toString(mScore));
-        TextView bestScoreView = (TextView) view.findViewById(R.id.best_score);
-        bestScoreView.setText(Integer.toString(mBestScore));
+        mBestScoreView = (TextView) view.findViewById(R.id.best_score);
+        mBestScoreView.setText(Integer.toString(mBestScore));
 
         return view;
     }
@@ -224,7 +221,7 @@ public class BoardFragment extends Fragment {
     private void updateScore() {
         mScore += mLevel;
         if (mScore % 9 == 0) {
-            mCards.addAll(CardLibrary.getRandomCards(mLevel));
+            mCards.addAll(CardLibrary.get(getActivity()).getRandomCards(mLevel));
         }
         mScoreView.setText(Integer.toString(mScore));
     }
@@ -274,8 +271,9 @@ public class BoardFragment extends Fragment {
         }
         mLevel = 1;
         mScore = 0;
-        mCards = CardLibrary.getRandomCards(mLevel);
+        mCards = CardLibrary.get(getActivity()).getRandomCards(mLevel);
         mScoreView.setText(Integer.toString(mScore));
+        mBestScoreView.setText(Integer.toString(mBestScore));
         mTileBar0.reset(mCards);
         mTileBar1.reset(mCards);
         mTileBar2.reset(mCards);
