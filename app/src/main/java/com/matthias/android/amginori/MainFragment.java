@@ -21,7 +21,6 @@ import android.widget.Toast;
 
 import com.matthias.android.amginori.persistence.Anki2DbHelper;
 import com.matthias.android.amginori.persistence.AnkiPackageImporter;
-import com.matthias.android.amginori.persistence.SharedPreferencesHelper;
 
 public class MainFragment extends Fragment {
 
@@ -56,7 +55,6 @@ public class MainFragment extends Fragment {
                 startActivity(intent);
                 return true;
             case R.id.menu_item_clear_cards:
-                SharedPreferencesHelper.get(getActivity()).remove("mBestScore");
                 getActivity().getApplicationContext().deleteDatabase(Anki2DbHelper.DATABASE_NAME);
                 CardLibrary.get(getActivity().getApplicationContext()).refresh();
                 updateSubtitle();
@@ -170,7 +168,6 @@ public class MainFragment extends Fragment {
         protected void onPostExecute(Boolean result) {
             if (result) {
                 CardLibrary.get(getActivity().getApplicationContext()).refresh();
-                SharedPreferencesHelper.get(getActivity()).remove("mBestScore");
                 updateSubtitle();
                 Toast.makeText(getActivity(), CardLibrary.get(getActivity()).size() + " cards imported.", Toast.LENGTH_LONG).show();
             } else {

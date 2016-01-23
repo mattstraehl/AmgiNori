@@ -28,7 +28,9 @@ public class BoardFragment extends Fragment {
 
     private int mLevel = 1;
     private int mScore = 0;
+    private int mMatchCount = 0;
     private int mBestScore;
+    private double mScoreIncrement;
 
     private ArrayList<Card> mCards;
 
@@ -56,11 +58,13 @@ public class BoardFragment extends Fragment {
         if (savedInstanceState != null) {
             mScore = savedInstanceState.getInt("mScore", 0);
             mBestScore = savedInstanceState.getInt("mBestScore", 0);
+            mMatchCount = savedInstanceState.getInt("mMatchCount", 0);
             mCards = savedInstanceState.getParcelableArrayList("mCards");
         } else {
             mBestScore = SharedPreferencesHelper.get(getActivity()).getInt("mBestScore", 0);
             mCards = CardLibrary.get(getActivity()).getRandomCards(mLevel);
         }
+        mScoreIncrement = Math.log(1 + CardLibrary.get(getActivity()).size());
     }
 
     @Override
@@ -68,6 +72,7 @@ public class BoardFragment extends Fragment {
         super.onSaveInstanceState(outState);
         outState.putInt("mScore", mScore);
         outState.putInt("mBestScore", mBestScore);
+        outState.putInt("mMatchCount", mMatchCount);
         outState.putParcelableArrayList("mCards", mCards);
         outState.putParcelableArrayList("mTileBar0", mTileBar0.getCards());
         outState.putParcelableArrayList("mTileBar1", mTileBar1.getCards());
@@ -134,7 +139,7 @@ public class BoardFragment extends Fragment {
                     case MotionEvent.ACTION_DOWN:
                     case MotionEvent.ACTION_MOVE:
                         mLayout.mPoints.add(new Point((int) event.getX(), (int) event.getY()));
-                        getView().invalidate();
+                        view.invalidate();
                         TileBar tileBar;
                         if (outOfBounds(event)) {
                             return true;
@@ -175,7 +180,7 @@ public class BoardFragment extends Fragment {
                         }
                         mSelected0 = mSelected1 = null;
                         mLayout.mPoints.clear();
-                        getView().invalidate();
+                        view.invalidate();
                         break;
                 }
                 return true;
@@ -219,8 +224,9 @@ public class BoardFragment extends Fragment {
     }
 
     private void updateScore() {
-        mScore += mLevel;
-        if (mScore % 9 == 0) {
+        mMatchCount++;
+        mScore = (int) (mMatchCount * mScoreIncrement);
+        if (mMatchCount % 9 == 0) {
             mCards.addAll(CardLibrary.get(getActivity()).getRandomCards(mLevel));
         }
         mScoreView.setText(Integer.toString(mScore));
@@ -246,10 +252,7 @@ public class BoardFragment extends Fragment {
         if (mTileBar1.matchAvailable(mTileBar2)) {
             return true;
         }
-        if (mTileBar0.matchAvailable(mTileBar2)) {
-            return true;
-        }
-        return false;
+        return mTileBar0.matchAvailable(mTileBar2);
     }
 
     private void createDialog() {
@@ -271,6 +274,7 @@ public class BoardFragment extends Fragment {
         }
         mLevel = 1;
         mScore = 0;
+        mMatchCount = 0;
         mCards = CardLibrary.get(getActivity()).getRandomCards(mLevel);
         mScoreView.setText(Integer.toString(mScore));
         mBestScoreView.setText(Integer.toString(mBestScore));
