@@ -26,6 +26,11 @@
             android:label="@string/app_name"
             android:parentActivityName="com.matthias.android.amginori.MainActivity">
         </activity>
+        <activity
+            android:name=".CardListActivity"
+            android:label="@string/app_name"
+            android:parentActivityName="com.matthias.android.amginori.MainActivity">
+        </activity>
     </application>
 
 </manifest>

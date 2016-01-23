@@ -2,8 +2,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="24dp">
+    android:layout_margin="24dp"
+    android:orientation="vertical">
 
     <TextView
         android:id="@+id/new_game"
@@ -113,7 +113,6 @@
         android:layout_alignEnd="@id/resume_button"
         android:layout_alignRight="@id/resume_button"
         android:layout_below="@id/import_cards"
-        android:text="@string/import_button"
-        android:onClick=""/>
+        android:text="@string/import_button" />
 
 </RelativeLayout>
