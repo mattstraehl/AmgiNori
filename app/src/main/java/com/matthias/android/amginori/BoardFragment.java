@@ -8,6 +8,7 @@ import android.os.Vibrator;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -202,6 +203,12 @@ public class BoardFragment extends Fragment {
         mScoreView.setText(Integer.toString(mScore));
         mBestScoreView = (TextView) view.findViewById(R.id.best_score);
         mBestScoreView.setText(Integer.toString(mBestScore));
+
+        String collectionName = SharedPreferencesHelper.get(getActivity()).getString("CollectionName", null);
+        if (collectionName != null) {
+            AppCompatActivity activity = (AppCompatActivity) getActivity();
+            activity.getSupportActionBar().setSubtitle(collectionName);
+        }
 
         return view;
     }

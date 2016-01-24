@@ -34,6 +34,18 @@ public final class SharedPreferencesHelper {
         editor.apply();
     }
 
+    public String getString(String key, String defValue) {
+        SharedPreferences settings = mContext.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        return settings.getString(key, defValue);
+    }
+
+    public void putString(String key, String value) {
+        SharedPreferences settings = mContext.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putString(key, value);
+        editor.apply();
+    }
+
     public void remove(String key) {
         SharedPreferences settings = mContext.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = settings.edit();

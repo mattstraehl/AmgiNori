@@ -21,6 +21,9 @@ import android.widget.Toast;
 
 import com.matthias.android.amginori.persistence.Anki2DbHelper;
 import com.matthias.android.amginori.persistence.AnkiPackageImporter;
+import com.matthias.android.amginori.persistence.SharedPreferencesHelper;
+
+import java.io.File;
 
 public class MainFragment extends Fragment {
 
@@ -29,6 +32,8 @@ public class MainFragment extends Fragment {
     private Button mResumeButton;
     private EditText mFront;
     private EditText mBack;
+
+    private Uri mUri;
 
     ProgressDialog mProgress;
 
@@ -55,6 +60,7 @@ public class MainFragment extends Fragment {
                 startActivity(intent);
                 return true;
             case R.id.menu_item_clear_cards:
+                SharedPreferencesHelper.get(getActivity()).remove("CollectionName");
                 getActivity().getApplicationContext().deleteDatabase(Anki2DbHelper.DATABASE_NAME);
                 CardLibrary.get(getActivity().getApplicationContext()).refresh();
                 updateSubtitle();
@@ -134,9 +140,9 @@ public class MainFragment extends Fragment {
             return;
         }
         if (requestCode == FILE_SELECT_CODE) {
-            Uri uri = data.getData();
+            mUri = data.getData();
             mProgress.show();
-            new ImportTask().execute(uri);
+            new ImportTask().execute(mUri);
         }
     }
 
@@ -168,12 +174,22 @@ public class MainFragment extends Fragment {
         protected void onPostExecute(Boolean result) {
             if (result) {
                 CardLibrary.get(getActivity().getApplicationContext()).refresh();
+                persistCollectionName(mUri);
                 updateSubtitle();
                 Toast.makeText(getActivity(), CardLibrary.get(getActivity()).size() + " cards imported.", Toast.LENGTH_LONG).show();
             } else {
                 Toast.makeText(getActivity(), "Selected file is not a valid Anki Package.", Toast.LENGTH_LONG).show();
             }
             mProgress.dismiss();
+        }
+
+        private void persistCollectionName(Uri uri) {
+            String collectionName = new File(uri.getPath()).getName();
+            int pos = collectionName.lastIndexOf(".");
+            if (pos > 0) {
+                collectionName = collectionName.substring(0, pos);
+            }
+            SharedPreferencesHelper.get(getActivity()).putString("CollectionName", collectionName);
         }
     }
 }
