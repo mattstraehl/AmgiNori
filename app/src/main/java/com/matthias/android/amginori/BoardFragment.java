@@ -56,12 +56,12 @@ public class BoardFragment extends Fragment {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
         if (savedInstanceState != null) {
-            mScore = savedInstanceState.getInt("mScore", 0);
-            mBestScore = savedInstanceState.getInt("mBestScore", 0);
-            mMatchCount = savedInstanceState.getInt("mMatchCount", 0);
-            mCards = savedInstanceState.getParcelableArrayList("mCards");
+            mScore = savedInstanceState.getInt("Score", 0);
+            mBestScore = savedInstanceState.getInt("BestScore", 0);
+            mMatchCount = savedInstanceState.getInt("MatchCount", 0);
+            mCards = savedInstanceState.getParcelableArrayList("Cards");
         } else {
-            mBestScore = SharedPreferencesHelper.get(getActivity()).getInt("mBestScore", 0);
+            mBestScore = SharedPreferencesHelper.get(getActivity()).getInt("BestScore", 0);
             mCards = CardLibrary.get(getActivity()).getRandomCards(mLevel);
         }
         mScoreIncrement = Math.log(1 + CardLibrary.get(getActivity()).size());
@@ -70,13 +70,13 @@ public class BoardFragment extends Fragment {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putInt("mScore", mScore);
-        outState.putInt("mBestScore", mBestScore);
-        outState.putInt("mMatchCount", mMatchCount);
-        outState.putParcelableArrayList("mCards", mCards);
-        outState.putParcelableArrayList("mTileBar0", mTileBar0.getCards());
-        outState.putParcelableArrayList("mTileBar1", mTileBar1.getCards());
-        outState.putParcelableArrayList("mTileBar2", mTileBar2.getCards());
+        outState.putInt("Score", mScore);
+        outState.putInt("BestScore", mBestScore);
+        outState.putInt("MatchCount", mMatchCount);
+        outState.putParcelableArrayList("Cards", mCards);
+        outState.putParcelableArrayList("TileBar0", mTileBar0.getCards());
+        outState.putParcelableArrayList("TileBar1", mTileBar1.getCards());
+        outState.putParcelableArrayList("TileBar2", mTileBar2.getCards());
     }
 
     @Override
@@ -85,7 +85,7 @@ public class BoardFragment extends Fragment {
         if (mScore > mBestScore) {
             mBestScore = mScore;
         }
-        SharedPreferencesHelper.get(getActivity()).putInt("mBestScore", mBestScore);
+        SharedPreferencesHelper.get(getActivity()).putInt("BestScore", mBestScore);
     }
 
     @Override
@@ -192,9 +192,9 @@ public class BoardFragment extends Fragment {
             mTileBar1.initCards(mCards);
             mTileBar2.initCards(mCards);
         } else {
-            mTileBar0.setCards(savedInstanceState.<Card>getParcelableArrayList("mTileBar0"));
-            mTileBar1.setCards(savedInstanceState.<Card>getParcelableArrayList("mTileBar1"));
-            mTileBar2.setCards(savedInstanceState.<Card>getParcelableArrayList("mTileBar2"));
+            mTileBar0.setCards(savedInstanceState.<Card>getParcelableArrayList("TileBar0"));
+            mTileBar1.setCards(savedInstanceState.<Card>getParcelableArrayList("TileBar1"));
+            mTileBar2.setCards(savedInstanceState.<Card>getParcelableArrayList("TileBar2"));
         }
 
         mLayout = (CustomLayout) view.findViewById(R.id.relative_layout);
