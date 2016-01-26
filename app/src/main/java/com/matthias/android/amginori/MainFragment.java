@@ -27,6 +27,8 @@ import java.io.File;
 
 public class MainFragment extends Fragment {
 
+    private int mLevel = 9;
+
     private Button mStartButton;
     private Button mImportButton;
     private Button mResumeButton;
@@ -78,7 +80,7 @@ public class MainFragment extends Fragment {
         mStartButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), BoardActivity.class);
+                Intent intent = BoardFragment.newIntent(getActivity(), mLevel);
                 startActivity(intent);
             }
         });
@@ -100,6 +102,27 @@ public class MainFragment extends Fragment {
 
         mResumeButton = (Button) view.findViewById(R.id.resume_button);
         mResumeButton.setEnabled(false);
+
+        RadioButton optionEasy = (RadioButton) view.findViewById(R.id.option_easy);
+        RadioButton optionHard = (RadioButton) view.findViewById(R.id.option_hard);
+        View.OnClickListener listener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                boolean checked = ((RadioButton) v).isChecked();
+                switch (v.getId()) {
+                    case R.id.option_easy:
+                        if (checked)
+                            mLevel = 9;
+                        break;
+                    case R.id.option_hard:
+                        if (checked)
+                            mLevel = 6;
+                        break;
+                }
+            }
+        };
+        optionEasy.setOnClickListener(listener);
+        optionHard.setOnClickListener(listener);
 
         mFront = (EditText) view.findViewById(R.id.front_text);
         mFront.setOnFocusChangeListener(new View.OnFocusChangeListener() {
@@ -149,18 +172,6 @@ public class MainFragment extends Fragment {
     private void updateSubtitle() {
         AppCompatActivity activity = (AppCompatActivity) getActivity();
         activity.getSupportActionBar().setSubtitle(CardLibrary.get(getActivity()).size() + " cards available");
-    }
-
-    public void onRadioButtonClicked(View view) {
-        boolean checked = ((RadioButton) view).isChecked();
-        switch (view.getId()) {
-            case R.id.option_easy:
-                if (checked)
-                    break;
-            case R.id.option_hard:
-                if (checked)
-                    break;
-        }
     }
 
     private class ImportTask extends AsyncTask<Uri, Void, Boolean> {

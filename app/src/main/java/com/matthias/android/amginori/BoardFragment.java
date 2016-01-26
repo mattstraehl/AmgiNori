@@ -2,6 +2,7 @@ package com.matthias.android.amginori;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.os.Vibrator;
@@ -27,11 +28,13 @@ import java.util.TreeMap;
 
 public class BoardFragment extends Fragment {
 
-    private int mLevel = 1;
+    private static final String EXTRA_LEVEL = "com.matthias.android.amginori.level";
+
     private int mScore = 0;
     private int mMatchCount = 0;
     private int mBestScore;
     private double mScoreIncrement;
+    private int mLevel;
 
     private ArrayList<Card> mCards;
 
@@ -63,9 +66,10 @@ public class BoardFragment extends Fragment {
             mCards = savedInstanceState.getParcelableArrayList("Cards");
         } else {
             mBestScore = SharedPreferencesHelper.get(getActivity()).getInt("BestScore", 0);
-            mCards = CardLibrary.get(getActivity()).getRandomCards(mLevel);
+            mCards = CardLibrary.get(getActivity()).getRandomCards(1);
         }
         mScoreIncrement = Math.log(1 + CardLibrary.get(getActivity()).size());
+        mLevel = getActivity().getIntent().getIntExtra(EXTRA_LEVEL, 9);
     }
 
     @Override
@@ -233,8 +237,8 @@ public class BoardFragment extends Fragment {
     private void updateScore() {
         mMatchCount++;
         mScore = (int) (mMatchCount * mScoreIncrement);
-        if (mMatchCount % 9 == 0) {
-            mCards.addAll(CardLibrary.get(getActivity()).getRandomCards(mLevel));
+        if (mMatchCount % mLevel == 0) {
+            mCards.addAll(CardLibrary.get(getActivity()).getRandomCards(1));
         }
         mScoreView.setText(Integer.toString(mScore));
     }
@@ -279,14 +283,19 @@ public class BoardFragment extends Fragment {
         if (mScore > mBestScore) {
             mBestScore = mScore;
         }
-        mLevel = 1;
         mScore = 0;
         mMatchCount = 0;
-        mCards = CardLibrary.get(getActivity()).getRandomCards(mLevel);
+        mCards = CardLibrary.get(getActivity()).getRandomCards(1);
         mScoreView.setText(Integer.toString(mScore));
         mBestScoreView.setText(Integer.toString(mBestScore));
         mTileBar0.reset(mCards);
         mTileBar1.reset(mCards);
         mTileBar2.reset(mCards);
+    }
+
+    public static Intent newIntent(Context packageContext, int level) {
+        Intent i = new Intent(packageContext, BoardActivity.class);
+        i.putExtra(EXTRA_LEVEL, level);
+        return i;
     }
 }
