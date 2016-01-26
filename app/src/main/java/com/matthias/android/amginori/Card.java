@@ -26,7 +26,7 @@ public final class Card implements Parcelable {
         this(front, back, showFront, CardState.ACTIVE);
     }
 
-    public Card(String front, String back, boolean showFront, CardState cardState) {
+    private Card(String front, String back, boolean showFront, CardState cardState) {
         mFront = front;
         mBack = back;
         mShowFront = showFront;
