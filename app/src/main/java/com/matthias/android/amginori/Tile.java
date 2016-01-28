@@ -32,7 +32,7 @@ public class Tile extends Button implements Card.CardObserver {
 
     @Override
     public boolean isEnabled() {
-        return !mCard.isDisabled();
+        return mCard.isEnabled();
     }
 
     public Card getCard() {
