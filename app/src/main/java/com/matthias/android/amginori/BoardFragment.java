@@ -74,18 +74,16 @@ public class BoardFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mVibrator = (Vibrator) getContext().getSystemService(Context.VIBRATOR_SERVICE);
         mBestScore = SharedPreferencesHelper.get(getActivity()).getInt("BestScore", 0);
         if (SharedPreferencesHelper.get(getActivity()).getBoolean("SavedGameValid", false)) {
             mMatchCount = SharedPreferencesHelper.get(getActivity()).getInt("MatchCount", 0);
+            mLevel = SharedPreferencesHelper.get(getActivity()).getInt("Level", 9);
+        } else {
+            mLevel = getActivity().getIntent().getIntExtra(EXTRA_LEVEL, 9);
         }
         mScoreIncrement = Math.log(1 + CardLibrary.get(getActivity()).size());
         mScore = (int) (mMatchCount * mScoreIncrement);
-        if (getActivity().getIntent().hasExtra(EXTRA_LEVEL)) {
-            mLevel = getActivity().getIntent().getIntExtra(EXTRA_LEVEL, 9);
-            getActivity().getIntent().removeExtra(EXTRA_LEVEL);
-        } else {
-            mLevel = SharedPreferencesHelper.get(getActivity()).getInt("Level", 9);
-        }
     }
 
     @Override
@@ -97,7 +95,6 @@ public class BoardFragment extends Fragment {
                 mBars.put(mTileBar0.getScrollView().getTop(), mTileBar0);
                 mBars.put(mTileBar1.getScrollView().getTop(), mTileBar1);
                 mBars.put(mTileBar2.getScrollView().getTop(), mTileBar2);
-                mVibrator = (Vibrator) getContext().getSystemService(Context.VIBRATOR_SERVICE);
             }
         });
 
