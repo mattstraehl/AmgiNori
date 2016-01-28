@@ -20,14 +20,16 @@ public final class AnkiPackageImporter {
     public static boolean importAnkiPackage(Context context, String dbName, Uri file) {
         Anki2DbHelper database = new Anki2DbHelper(context);
         database.getReadableDatabase();
+        ZipFile zipFile = null;
+        OutputStream out = null;
         try {
-            ZipFile zipFile = new ZipFile(new File(file.getPath()), ZipFile.OPEN_READ);
+            zipFile = new ZipFile(new File(file.getPath()), ZipFile.OPEN_READ);
             ZipEntry ze = zipFile.getEntry(ZIP_FILE_ENTRY);
             if (ze == null || ze.isDirectory()) {
                 return false;
             }
             InputStream in = zipFile.getInputStream(ze);
-            OutputStream out = new FileOutputStream(context.getDatabasePath(dbName).getAbsolutePath());
+            out = new FileOutputStream(context.getDatabasePath(dbName).getAbsolutePath());
             byte[] buffer = new byte[FILE_COPY_BUFFER_SIZE];
             int n;
             while ((n = in.read(buffer)) > 0) {
@@ -35,9 +37,22 @@ public final class AnkiPackageImporter {
             }
             out.flush();
             out.close();
-            in.close();
+            zipFile.close();
         } catch (IOException e) {
             return false;
+        } finally {
+            if (out != null) {
+                try {
+                    out.close();
+                } catch (IOException e) {
+                }
+            }
+            if (zipFile != null) {
+                try {
+                    zipFile.close();
+                } catch (IOException e) {
+                }
+            }
         }
         database.close();
         return true;
