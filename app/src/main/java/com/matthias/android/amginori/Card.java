@@ -3,7 +3,9 @@ package com.matthias.android.amginori;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public final class Card implements Parcelable {
+import java.io.Serializable;
+
+public final class Card implements Parcelable, Serializable {
 
     private enum CardState {
         ACTIVE, MARKED, DISABLED
@@ -16,7 +18,7 @@ public final class Card implements Parcelable {
 
     private final CardState mCardState;
 
-    private CardObserver mHead;
+    private transient CardObserver mHead;
 
     public Card(String front, String back) {
         this(front, back, Math.random() < 0.5 ? true : false, CardState.ACTIVE);

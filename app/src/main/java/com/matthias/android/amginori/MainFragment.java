@@ -49,6 +49,12 @@ public class MainFragment extends Fragment {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        updateUI();
+    }
+
+    @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.fragment_main, menu);
@@ -65,7 +71,8 @@ public class MainFragment extends Fragment {
                 SharedPreferencesHelper.get(getActivity()).remove("CollectionName");
                 getActivity().getApplicationContext().deleteDatabase(Anki2DbHelper.DATABASE_NAME);
                 CardLibrary.get(getActivity().getApplicationContext()).refresh();
-                updateSubtitle();
+                invalidateSavedGame();
+                updateUI();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -78,6 +85,16 @@ public class MainFragment extends Fragment {
 
         mStartButton = (Button) view.findViewById(R.id.start_button);
         mStartButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                invalidateSavedGame();
+                Intent intent = BoardFragment.newIntent(getActivity(), mLevel);
+                startActivity(intent);
+            }
+        });
+
+        mResumeButton = (Button) view.findViewById(R.id.resume_button);
+        mResumeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = BoardFragment.newIntent(getActivity(), mLevel);
@@ -99,9 +116,6 @@ public class MainFragment extends Fragment {
                 }
             }
         });
-
-        mResumeButton = (Button) view.findViewById(R.id.resume_button);
-        mResumeButton.setEnabled(false);
 
         RadioButton optionEasy = (RadioButton) view.findViewById(R.id.option_easy);
         RadioButton optionHard = (RadioButton) view.findViewById(R.id.option_hard);
@@ -152,8 +166,6 @@ public class MainFragment extends Fragment {
         mProgress.setMessage("Loading...");
         mProgress.setProgressStyle(ProgressDialog.STYLE_SPINNER);
 
-        updateSubtitle();
-
         return view;
     }
 
@@ -169,9 +181,14 @@ public class MainFragment extends Fragment {
         }
     }
 
-    private void updateSubtitle() {
+    private void updateUI() {
         AppCompatActivity activity = (AppCompatActivity) getActivity();
         activity.getSupportActionBar().setSubtitle(CardLibrary.get(getActivity()).size() + " cards available");
+        mResumeButton.setEnabled(SharedPreferencesHelper.get(getActivity()).getBoolean("SavedGameValid", false));
+    }
+
+    private void invalidateSavedGame() {
+        SharedPreferencesHelper.get(getActivity()).remove("SavedGameValid");
     }
 
     private class ImportTask extends AsyncTask<Uri, Void, Boolean> {
@@ -186,7 +203,8 @@ public class MainFragment extends Fragment {
             if (result) {
                 CardLibrary.get(getActivity().getApplicationContext()).refresh();
                 persistCollectionName(mUri);
-                updateSubtitle();
+                invalidateSavedGame();
+                updateUI();
                 Toast.makeText(getActivity(), CardLibrary.get(getActivity()).size() + " cards imported.", Toast.LENGTH_LONG).show();
             } else {
                 Toast.makeText(getActivity(), "Selected file is not a valid Anki Package.", Toast.LENGTH_LONG).show();

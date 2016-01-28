@@ -22,6 +22,18 @@ public final class SharedPreferencesHelper {
         return sSharedPreferencesHelper;
     }
 
+    public boolean getBoolean(String key, boolean defValue) {
+        SharedPreferences settings = mContext.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        return settings.getBoolean(key, defValue);
+    }
+
+    public void putBoolean(String key, boolean value) {
+        SharedPreferences settings = mContext.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putBoolean(key, value);
+        editor.apply();
+    }
+
     public int getInt(String key, int defValue) {
         SharedPreferences settings = mContext.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
         return settings.getInt(key, defValue);
