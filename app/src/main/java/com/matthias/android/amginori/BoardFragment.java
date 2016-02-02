@@ -69,6 +69,8 @@ public class BoardFragment extends Fragment {
         SharedPreferencesHelper.get(getActivity()).putString("TileBar2", Base64.encodeObject(mTileBar2.getCards()));
 
         SharedPreferencesHelper.get(getActivity()).putBoolean("SavedGameValid", true);
+
+        CardLibrary.get(getActivity()).persist();
     }
 
     @Override
@@ -181,14 +183,12 @@ public class BoardFragment extends Fragment {
             String tileBar1 = SharedPreferencesHelper.get(getActivity()).getString("TileBar1", "");
             String tileBar2 = SharedPreferencesHelper.get(getActivity()).getString("TileBar2", "");
             mCards = Base64.decodeString(cards);
+            CardLibrary.get(getActivity()).restore();
             mTileBar0.setCards(Base64.<ArrayList<Card>>decodeString(tileBar0));
             mTileBar1.setCards(Base64.<ArrayList<Card>>decodeString(tileBar1));
             mTileBar2.setCards(Base64.<ArrayList<Card>>decodeString(tileBar2));
         } else {
-            mCards = CardLibrary.get(getActivity()).getRandomCards(1);
-            mTileBar0.initCards(mCards);
-            mTileBar1.initCards(mCards);
-            mTileBar2.initCards(mCards);
+            init();
         }
     }
 
@@ -248,20 +248,24 @@ public class BoardFragment extends Fragment {
         builder.create().show();
     }
 
+    private void init() {
+        mCards = CardLibrary.get(getActivity()).getRandomCards(1);
+        CardLibrary.get(getActivity()).reset();
+        mTileBar0.init(mCards);
+        mTileBar1.init(mCards);
+        mTileBar2.init(mCards);
+    }
+
     private void reset() {
-        SharedPreferencesHelper.get(getActivity()).remove("TileBar0");
         mSelected0 = mSelected1 = null;
         if (mScore > mBestScore) {
             mBestScore = mScore;
         }
         mScore = 0;
         mMatchCount = 0;
-        mCards = CardLibrary.get(getActivity()).getRandomCards(1);
         mScoreView.setText(Integer.toString(mScore));
         mBestScoreView.setText(Integer.toString(mBestScore));
-        mTileBar0.reset(mCards);
-        mTileBar1.reset(mCards);
-        mTileBar2.reset(mCards);
+        init();
     }
 
     public static Intent newIntent(Context packageContext, int level) {

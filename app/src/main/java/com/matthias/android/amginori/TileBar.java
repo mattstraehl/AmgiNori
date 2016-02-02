@@ -22,18 +22,10 @@ public final class TileBar {
         }
     }
 
-    public void initCards(List<Card> cards) {
-        for (Tile tile : mTilesUnordered) {
-            Card card = cards.get((int) (cards.size() * Math.random()));
-            tile.setCard(card.copied());
-        }
-    }
-
-    public void reset(List<Card> cards) {
+    public void init(List<Card> cards) {
         mScrollView.setScrollX(0);
         for (Tile tile : mTilesUnordered) {
             tile.initValues(cards);
-            tile.getBackground().setColorFilter(null);
         }
     }
 
