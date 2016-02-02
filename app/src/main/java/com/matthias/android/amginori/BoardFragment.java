@@ -198,7 +198,8 @@ public class BoardFragment extends Fragment {
 
     private void notifyMatch() {
         updateScore();
-        reinsertTiles();
+        reinsertTile(mSelected0);
+        reinsertTile(mSelected1);
     }
 
     private void notifyClash() {
@@ -218,17 +219,11 @@ public class BoardFragment extends Fragment {
         mScoreView.setText(Integer.toString(mScore));
     }
 
-    private void reinsertTiles() {
-        ViewGroup viewGroup0 = (ViewGroup) mSelected0.getParent();
-        ViewGroup viewGroup1 = (ViewGroup) mSelected1.getParent();
-        viewGroup0.removeView(mSelected0);
-        viewGroup1.removeView(mSelected1);
-
-        mSelected0.initValues(mCards);
-        mSelected1.initValues(mCards);
-
-        viewGroup0.addView(mSelected0, (int) (Math.random() * viewGroup0.getChildCount()));
-        viewGroup1.addView(mSelected1, (int) (Math.random() * viewGroup1.getChildCount()));
+    private void reinsertTile(Tile tile) {
+        ViewGroup viewGroup = (ViewGroup) tile.getParent();
+        viewGroup.removeView(tile);
+        tile.initValues(mCards);
+        viewGroup.addView(tile, (int) (Math.random() * viewGroup.getChildCount()));
     }
 
     private boolean matchAvailable() {

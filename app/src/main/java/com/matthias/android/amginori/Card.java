@@ -61,11 +61,12 @@ public final class Card implements Parcelable, Serializable {
         return result;
     }
 
-    public Card copied() {
-        Card result = new Card(mFront, mBack, mShowFront, mCardState);
-        result.mHead = mHead;
-        notifyObservers(result);
-        return result;
+    public Card copy() {
+        return new Card(mFront, mBack, mShowFront, mCardState);
+    }
+
+    public Card reversedCopy() {
+        return new Card(mFront, mBack, !mShowFront, mCardState);
     }
 
     @Override

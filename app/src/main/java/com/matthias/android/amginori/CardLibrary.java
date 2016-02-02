@@ -34,7 +34,7 @@ public final class CardLibrary {
         for (int i = 0; i < size; i++) {
             Card card = mCards.get((int) (mCards.size() * Math.random()));
             result.add(card);
-            result.add(new Card(card.mFront, card.mBack, !card.mShowFront));
+            result.add(card.reversedCopy());
         }
         return result;
     }

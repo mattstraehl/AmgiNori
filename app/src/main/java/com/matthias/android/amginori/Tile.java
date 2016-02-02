@@ -22,8 +22,7 @@ public class Tile extends Button implements Card.CardObserver {
     }
 
     public void initValues(List<Card> cards) {
-        Card card = cards.get((int) (cards.size() * Math.random()));
-        setCard(card.copied());
+        setCard(CardLibrary.get(getContext()).nextCard(cards));
     }
 
     public boolean match(Tile other) {
