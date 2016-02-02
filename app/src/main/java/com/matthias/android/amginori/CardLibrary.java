@@ -4,15 +4,22 @@ import android.content.Context;
 
 import com.matthias.android.amginori.persistence.Anki2DbHelper;
 import com.matthias.android.amginori.persistence.Anki2DbSchema.NotesTable;
+import com.matthias.android.amginori.persistence.SharedPreferencesHelper;
+import com.matthias.android.amginori.utils.Base64;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 
 public final class CardLibrary {
 
+    private static final int CARD_POOL_SIZE = 12;
+
     private static CardLibrary sCardLibrary;
 
     private List<Card> mCards = new ArrayList<>();
+    private LinkedList<Card> mCardPool = new LinkedList<>();
 
     private int mSize = 0;
 
@@ -27,6 +34,21 @@ public final class CardLibrary {
             sCardLibrary = new CardLibrary(context);
         }
         return sCardLibrary;
+    }
+
+    public Card nextCard(List<Card> cards) {
+        if (mCardPool.isEmpty()) {
+            Card[] newCards = new Card[CARD_POOL_SIZE];
+            // Insert cards in this order: [c_1, r_n, c_2, r_n-1, ... c_n-1, r_2, c_n, r_1]
+            for (int i = 0; i < CARD_POOL_SIZE / 2; i++) {
+                newCards[i * 2] = cards.get((int) (cards.size() * Math.random())).copy();
+            }
+            for (int i = 0; i < CARD_POOL_SIZE / 2; i++) {
+                newCards[CARD_POOL_SIZE - 1 - (i * 2)] = newCards[i * 2].reversedCopy();
+            }
+            Collections.addAll(mCardPool, newCards);
+        }
+        return mCardPool.poll();
     }
 
     public ArrayList<Card> getRandomCards(int size) {
@@ -53,6 +75,19 @@ public final class CardLibrary {
             }
             mSize = mCards.size();
         }
+    }
+
+    public void persist() {
+        SharedPreferencesHelper.get(mContext).putString("CardPool", Base64.encodeObject(mCardPool));
+    }
+
+    public void restore() {
+        String cardPool = SharedPreferencesHelper.get(mContext).getString("CardPool", "");
+        mCardPool = Base64.decodeString(cardPool);
+    }
+
+    public void reset() {
+        mCardPool.clear();
     }
 
     public int size() {
