@@ -43,7 +43,7 @@
         android:layout_below="@id/level"
         android:layout_toEndOf="@id/new_game"
         android:layout_toRightOf="@id/new_game"
-        android:text="@string/start_button" />
+        android:text="@string/button_start" />
 
     <Button
         android:id="@+id/resume_button"
@@ -52,7 +52,7 @@
         android:layout_below="@id/level"
         android:layout_toEndOf="@id/start_button"
         android:layout_toRightOf="@id/start_button"
-        android:text="@string/resume_button" />
+        android:text="@string/button_resume" />
 
     <View
         android:id="@+id/divider_1"
@@ -81,7 +81,7 @@
         android:layout_toRightOf="@id/new_card"
         android:ems="11"
         android:inputType="text"
-        android:text="@string/front_text"
+        android:text="@string/front"
         android:textAppearance="?android:attr/textAppearanceSmall" />
 
     <EditText
@@ -93,7 +93,7 @@
         android:layout_toRightOf="@id/new_card"
         android:ems="11"
         android:inputType="text"
-        android:text="@string/back_text"
+        android:text="@string/back"
         android:textAppearance="?android:attr/textAppearanceSmall" />
 
     <Button
@@ -103,7 +103,7 @@
         android:layout_alignEnd="@id/resume_button"
         android:layout_alignRight="@id/resume_button"
         android:layout_below="@id/back_text"
-        android:text="@string/add_button" />
+        android:text="@string/button_add" />
 
     <View
         android:id="@+id/divider_2"
@@ -130,6 +130,6 @@
         android:layout_alignRight="@id/resume_button"
         android:layout_below="@id/divider_2"
         android:layout_marginTop="15dp"
-        android:text="@string/import_button" />
+        android:text="@string/button_import" />
 
 </RelativeLayout>
