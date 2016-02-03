@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/menu_item_rotate"
+        android:id="@+id/menu_item_restart"
         android:icon="@android:drawable/ic_menu_rotate"
         android:title="@string/rotate"
         app:showAsAction="ifRoom|never" />
