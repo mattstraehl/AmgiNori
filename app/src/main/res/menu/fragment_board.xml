@@ -3,21 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/menu_item_mode_3"
-        android:title="@string/mode_3"
-        app:showAsAction="never" />
-
-    <item
-        android:id="@+id/menu_item_mode_2"
-        android:title="@string/mode_2"
-        app:showAsAction="never" />
-
-    <item
-        android:id="@+id/menu_item_mode_1"
-        android:title="@string/mode_1"
-        app:showAsAction="never" />
-
-    <item
         android:id="@+id/menu_item_rotate"
         android:icon="@android:drawable/ic_menu_rotate"
         android:title="@string/rotate"

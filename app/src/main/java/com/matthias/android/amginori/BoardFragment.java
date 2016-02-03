@@ -10,6 +10,9 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -76,6 +79,7 @@ public class BoardFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        this.setHasOptionsMenu(true);
         mVibrator = (Vibrator) getContext().getSystemService(Context.VIBRATOR_SERVICE);
         mBestScore = SharedPreferencesHelper.get(getActivity()).getInt("BestScore", 0);
         if (SharedPreferencesHelper.get(getActivity()).getBoolean("SavedGameValid", false)) {
@@ -189,6 +193,23 @@ public class BoardFragment extends Fragment {
             mTileBar2.setCards(Base64.<ArrayList<Card>>decodeString(tileBar2));
         } else {
             init();
+        }
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.fragment_board, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menu_item_restart:
+                reset();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
     }
 

@@ -19,6 +19,7 @@
     <string name="option_easy">Easy</string>
     <string name="option_hard">Hard</string>
     <string name="question">Question</string>
+    <string name="restart">Restart</string>
     <string name="resume_button">Resume</string>
     <string name="rotate">Rotate</string>
     <string name="score">Score</string>
