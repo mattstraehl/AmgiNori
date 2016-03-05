@@ -32,6 +32,7 @@ public final class CardLibrary {
     public static CardLibrary get(Context context) {
         if (sCardLibrary == null) {
             sCardLibrary = new CardLibrary(context);
+            sCardLibrary.refresh();
         }
         return sCardLibrary;
     }

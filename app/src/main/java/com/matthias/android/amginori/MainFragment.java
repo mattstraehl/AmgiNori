@@ -45,7 +45,6 @@ public class MainFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.setHasOptionsMenu(true);
-        CardLibrary.get(getActivity()).refresh();
     }
 
     @Override

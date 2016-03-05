@@ -24,7 +24,7 @@ public class CustomLayout extends RelativeLayout {
         //mPaint.setColor(Color.argb(128, 200, 200, 200));
         mPaint.setColor(Color.WHITE);
         mPaint.setStyle(Paint.Style.STROKE);
-        mPaint.setStrokeWidth(5);
+        mPaint.setStrokeWidth(10);
     }
 
     @Override
