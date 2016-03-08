@@ -21,7 +21,7 @@ public class Tile extends Button implements Card.CardObserver {
         setTransformationMethod(null);
     }
 
-    public void initValues(List<Card> cards) {
+    public void init(List<Card> cards) {
         setCard(CardLibrary.get(getContext()).nextCard(cards));
     }
 
@@ -45,6 +45,7 @@ public class Tile extends Button implements Card.CardObserver {
             this.getBackground().setColorFilter(MATERIAL_DEEP_ORANGE_700);
         } else {
             this.getBackground().setColorFilter(null);
+            this.setAlpha(mCard.getAlpha());
         }
         mCard.addObserver(this);
     }
@@ -52,13 +53,19 @@ public class Tile extends Button implements Card.CardObserver {
     @Override
     public void onNotify(Card card) {
         mCard = card;
+        resetAlpha();
         if (card.isActive()) {
             getBackground().setColorFilter(null);
+            this.setAlpha(mCard.getAlpha());
         } else if (card.isMarked()) {
             getBackground().setColorFilter(Tile.MATERIAL_GREY_500);
         } else if (card.isDisabled()) {
             getBackground().setColorFilter(Tile.MATERIAL_DEEP_ORANGE_700);
         }
+    }
+
+    private void resetAlpha() {
+        this.setAlpha(1f);
     }
 
     @Override

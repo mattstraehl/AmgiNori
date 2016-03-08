@@ -1,13 +1,13 @@
 package com.matthias.android.amginori;
 
+import android.app.Activity;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AlertDialog;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -26,9 +26,10 @@ import java.util.ArrayList;
 import java.util.NavigableMap;
 import java.util.TreeMap;
 
-public class BoardFragment extends Fragment {
+public class BoardFragment extends Fragment implements TileUpdateRunnable.GameOverCallback {
 
     private static final String EXTRA_LEVEL = "com.matthias.android.amginori.level";
+    private static final int GAME_OVER_DIALOG_CODE = 0;
 
     private int mMatchCount = 0;
     private int mScore;
@@ -45,7 +46,6 @@ public class BoardFragment extends Fragment {
 
     private TileBar mTileBar0;
     private TileBar mTileBar1;
-    private TileBar mTileBar2;
 
     private NavigableMap<Integer, TileBar> mBars = new TreeMap<>();
 
@@ -55,9 +55,18 @@ public class BoardFragment extends Fragment {
 
     private Vibrator mVibrator;
 
+    private Thread mUpdateThread;
+
     @Override
     public void onPause() {
         super.onPause();
+
+        mUpdateThread.interrupt();
+        try {
+            mUpdateThread.join();
+        } catch (InterruptedException e) {
+        }
+
         if (mScore > mBestScore) {
             mBestScore = mScore;
         }
@@ -69,7 +78,6 @@ public class BoardFragment extends Fragment {
         SharedPreferencesHelper.get(getActivity()).putString("Cards", Base64.encodeObject(mCards));
         SharedPreferencesHelper.get(getActivity()).putString("TileBar0", Base64.encodeObject(mTileBar0.getCards()));
         SharedPreferencesHelper.get(getActivity()).putString("TileBar1", Base64.encodeObject(mTileBar1.getCards()));
-        SharedPreferencesHelper.get(getActivity()).putString("TileBar2", Base64.encodeObject(mTileBar2.getCards()));
 
         SharedPreferencesHelper.get(getActivity()).putBoolean("SavedGameValid", true);
 
@@ -100,13 +108,13 @@ public class BoardFragment extends Fragment {
             public void run() {
                 mBars.put(mTileBar0.getScrollView().getTop(), mTileBar0);
                 mBars.put(mTileBar1.getScrollView().getTop(), mTileBar1);
-                mBars.put(mTileBar2.getScrollView().getTop(), mTileBar2);
             }
         });
 
-        mTileBar0 = new TileBar((HorizontalScrollView) view.findViewById(R.id.scroll_view_0));
-        mTileBar1 = new TileBar((HorizontalScrollView) view.findViewById(R.id.scroll_view_1));
-        mTileBar2 = new TileBar((HorizontalScrollView) view.findViewById(R.id.scroll_view_2));
+        HorizontalScrollView scrollView0 = (HorizontalScrollView) view.findViewById(R.id.scroll_view_0);
+        HorizontalScrollView scrollView1 = (HorizontalScrollView) view.findViewById(R.id.scroll_view_1);
+        mTileBar0 = new TileBar(getActivity(), scrollView0);
+        mTileBar1 = new TileBar(getActivity(), scrollView1);
 
         view.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -148,8 +156,8 @@ public class BoardFragment extends Fragment {
                             } else {
                                 notifyClash();
                             }
-                            if (!matchAvailable()) {
-                                createDialog();
+                            if (TileBar.isGameOver(mTileBar0, mTileBar1)) {
+                                gameOverCallback();
                             }
                         } else if (mSelected0 != null) {
                             mSelected0.getCard().active();
@@ -185,15 +193,14 @@ public class BoardFragment extends Fragment {
             String cards = SharedPreferencesHelper.get(getActivity()).getString("Cards", "");
             String tileBar0 = SharedPreferencesHelper.get(getActivity()).getString("TileBar0", "");
             String tileBar1 = SharedPreferencesHelper.get(getActivity()).getString("TileBar1", "");
-            String tileBar2 = SharedPreferencesHelper.get(getActivity()).getString("TileBar2", "");
             mCards = Base64.decodeString(cards);
             CardLibrary.get(getActivity()).restore();
-            mTileBar0.setCards(Base64.<ArrayList<Card>>decodeString(tileBar0));
-            mTileBar1.setCards(Base64.<ArrayList<Card>>decodeString(tileBar1));
-            mTileBar2.setCards(Base64.<ArrayList<Card>>decodeString(tileBar2));
+            mTileBar0.setCards(Base64.<ArrayList<Card>>decodeString(tileBar0), mCards);
+            mTileBar1.setCards(Base64.<ArrayList<Card>>decodeString(tileBar1), mCards);
         } else {
             init();
         }
+        startUpdateThread();
     }
 
     @Override
@@ -214,7 +221,7 @@ public class BoardFragment extends Fragment {
     }
 
     private boolean outOfBounds(MotionEvent event) {
-        return event.getY() < mTileBar0.getScrollView().getTop() || event.getY() > (mTileBar2.getScrollView().getTop()) + mTileBar2.getScrollView().getHeight();
+        return event.getY() < mTileBar0.getScrollView().getTop() || event.getY() > (mTileBar1.getScrollView().getTop()) + mTileBar1.getScrollView().getHeight();
     }
 
     private void notifyMatch() {
@@ -242,31 +249,19 @@ public class BoardFragment extends Fragment {
 
     private void reinsertTile(Tile tile) {
         ViewGroup viewGroup = (ViewGroup) tile.getParent();
-        viewGroup.removeView(tile);
-        tile.initValues(mCards);
-        viewGroup.addView(tile, (int) (Math.random() * viewGroup.getChildCount()));
+        synchronized (viewGroup) {
+            viewGroup.removeView(tile);
+            tile.init(mCards);
+            viewGroup.addView(tile, (int) (Math.random() * viewGroup.getChildCount()));
+        }
     }
 
-    private boolean matchAvailable() {
-        if (mTileBar0.matchAvailable(mTileBar1)) {
-            return true;
-        }
-        if (mTileBar1.matchAvailable(mTileBar2)) {
-            return true;
-        }
-        return mTileBar0.matchAvailable(mTileBar2);
-    }
-
-    private void createDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle("Game Over!");
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                reset();
-            }
-        });
-        builder.setCancelable(false);
-        builder.create().show();
+    private void createGameOverDialog() {
+        FragmentManager manager = getFragmentManager();
+        GameOverDialogFragment dialog = new GameOverDialogFragment();
+        dialog.setTargetFragment(this, GAME_OVER_DIALOG_CODE);
+        dialog.setCancelable(false);
+        dialog.show(manager, "dialog");
     }
 
     private void init() {
@@ -274,10 +269,10 @@ public class BoardFragment extends Fragment {
         CardLibrary.get(getActivity()).reset();
         mTileBar0.init(mCards);
         mTileBar1.init(mCards);
-        mTileBar2.init(mCards);
     }
 
     private void reset() {
+        mUpdateThread.interrupt();
         mSelected0 = mSelected1 = null;
         if (mScore > mBestScore) {
             mBestScore = mScore;
@@ -287,6 +282,28 @@ public class BoardFragment extends Fragment {
         mScoreView.setText(Integer.toString(mScore));
         mBestScoreView.setText(Integer.toString(mBestScore));
         init();
+        startUpdateThread();
+    }
+
+    private void startUpdateThread() {
+        mUpdateThread = new Thread(new TileUpdateRunnable(mTileBar0, mTileBar1, this));
+        mUpdateThread.start();
+    }
+
+    @Override
+    public void gameOverCallback() {
+        mUpdateThread.interrupt();
+        createGameOverDialog();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode != Activity.RESULT_OK) {
+            return;
+        }
+        if (requestCode == GAME_OVER_DIALOG_CODE) {
+            reset();
+        }
     }
 
     public static Intent newIntent(Context packageContext, int level) {

@@ -1,6 +1,8 @@
 package com.matthias.android.amginori;
 
+import android.content.Context;
 import android.graphics.Rect;
+import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.widget.HorizontalScrollView;
 
@@ -9,47 +11,41 @@ import java.util.List;
 
 public final class TileBar {
 
+    private final Context mContext;
     private final HorizontalScrollView mScrollView;
     private final ViewGroup mTiles;
 
-    private final List<Tile> mTilesUnordered = new ArrayList<>();
+    private List<Card> mCards;
 
-    public TileBar(HorizontalScrollView scrollView) {
+    public TileBar(Context context, HorizontalScrollView scrollView) {
+        mContext = context.getApplicationContext();
         mScrollView = scrollView;
         mTiles = (ViewGroup) mScrollView.getChildAt(0);
-        for (int i = 0; i < mTiles.getChildCount(); i++) {
-            mTilesUnordered.add((Tile) mTiles.getChildAt(i));
-        }
     }
 
     public void init(List<Card> cards) {
-        mScrollView.setScrollX(0);
-        for (Tile tile : mTilesUnordered) {
-            tile.initValues(cards);
+        mCards = cards;
+        mTiles.removeAllViews();
+        for (int i = 0; i < 3; i++) {
+            Tile tile = (Tile) LayoutInflater.from(mContext).inflate(R.layout.tile, mTiles, false);
+            tile.init(cards);
+            mTiles.addView(tile);
         }
+        mScrollView.setScrollX(0);
     }
 
-    public Tile maybeOneTileContains(int x, int y) {
-        for (Tile tile : mTilesUnordered) {
+    public synchronized Tile maybeOneTileContains(int x, int y) {
+        for (int i = 0; i < mTiles.getChildCount(); i++) {
+            Tile tile = (Tile) mTiles.getChildAt(i);
             Rect rect = new Rect();
             tile.getHitRect(rect);
             rect.inset(25, 25);
-            if (tile.isEnabled() && rect.contains(x + mScrollView.getScrollX(), y - mScrollView.getTop())) {
+            if (tile.isEnabled() && rect.contains(x + mScrollView.getScrollX() - mScrollView.getLeft(),
+                    y - mScrollView.getTop())) {
                 return tile;
             }
         }
         return null;
-    }
-
-    public boolean matchAvailable(TileBar other) {
-        for (Tile tile0 : mTilesUnordered) {
-            for (Tile tile1 : other.mTilesUnordered) {
-                if (tile0.match(tile1)) {
-                    return true;
-                }
-            }
-        }
-        return false;
     }
 
     public ArrayList<Card> getCards() {
@@ -61,14 +57,58 @@ public final class TileBar {
         return result;
     }
 
-    public void setCards(ArrayList<Card> cards) {
+    public void setCards(ArrayList<Card> restored, List<Card> cards) {
+        mCards = cards;
+        mTiles.removeAllViews();
+        for (int i = 0; i < restored.size(); i++) {
+            Tile tile = (Tile) LayoutInflater.from(mContext).inflate(R.layout.tile, mTiles, false);
+            tile.setCard(restored.get(i));
+            mTiles.addView(tile);
+        }
+    }
+
+    public synchronized void updateTiles() {
+        for (int i = 0; i < mTiles.getChildCount(); i++) {
+            final Tile tile = (Tile) mTiles.getChildAt(i);
+            if (tile.getCard().isActive()) {
+                float alpha = tile.getCard().getAlpha() - 0.1f;
+                if (alpha < 0) {
+                    mTiles.removeView(tile);
+                } else {
+                    tile.getCard().setAlpha(alpha);
+                }
+            }
+        }
+    }
+
+    public void addTile() {
+        Tile tile = (Tile) LayoutInflater.from(mContext).inflate(R.layout.tile, mTiles, false);
+        tile.init(mCards);
+        synchronized (this) {
+            mTiles.addView(tile, (int) (Math.random() * mTiles.getChildCount()));
+        }
+    }
+
+    private synchronized int enabledTileCount() {
+        int result = 0;
         for (int i = 0; i < mTiles.getChildCount(); i++) {
             Tile tile = (Tile) mTiles.getChildAt(i);
-            tile.setCard(cards.get(i));
+            if (tile.isEnabled()) {
+                result++;
+            }
         }
+        return result;
+    }
+
+    public static boolean isGameOver(TileBar tileBar0, TileBar tileBar1) {
+        return tileBar0.enabledTileCount() == 0 && tileBar1.enabledTileCount() == 0;
     }
 
     public HorizontalScrollView getScrollView() {
         return mScrollView;
+    }
+
+    public ViewGroup getTiles() {
+        return mTiles;
     }
 }

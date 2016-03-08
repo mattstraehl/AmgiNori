@@ -18,22 +18,21 @@ public final class Card implements Parcelable, Serializable {
 
     private final CardState mCardState;
 
+    private volatile float mAlpha = 1f;
+
     private transient CardObserver mHead;
 
     public Card(String front, String back) {
-        this(front, back, Math.random() < 0.5 ? true : false, CardState.ACTIVE);
+        this(front, back, Math.random() < 0.5 ? true : false, CardState.ACTIVE, 1f);
     }
 
-    public Card(String front, String back, boolean showFront) {
-        this(front, back, showFront, CardState.ACTIVE);
-    }
-
-    private Card(String front, String back, boolean showFront, CardState cardState) {
+    private Card(String front, String back, boolean showFront, CardState cardState, float alpha) {
         mFront = front;
         mBack = back;
         mShowFront = showFront;
         mToDisplay = mShowFront ? mFront : mBack;
         mCardState = cardState;
+        mAlpha = alpha;
     }
 
     public boolean match(Card other) {
@@ -41,32 +40,32 @@ public final class Card implements Parcelable, Serializable {
     }
 
     public Card active() {
-        Card result = new Card(mFront, mBack, mShowFront, CardState.ACTIVE);
+        Card result = new Card(mFront, mBack, mShowFront, CardState.ACTIVE, mAlpha);
         result.mHead = mHead;
         notifyObservers(result);
         return result;
     }
 
     public Card marked() {
-        Card result = new Card(mFront, mBack, mShowFront, CardState.MARKED);
+        Card result = new Card(mFront, mBack, mShowFront, CardState.MARKED, mAlpha);
         result.mHead = mHead;
         notifyObservers(result);
         return result;
     }
 
     public Card disabled() {
-        Card result = new Card(mFront, mBack, mShowFront, CardState.DISABLED);
+        Card result = new Card(mFront, mBack, mShowFront, CardState.DISABLED, mAlpha);
         result.mHead = mHead;
         notifyObservers(result);
         return result;
     }
 
     public Card copy() {
-        return new Card(mFront, mBack, mShowFront, mCardState);
+        return new Card(mFront, mBack, mShowFront, mCardState, mAlpha);
     }
 
     public Card reversedCopy() {
-        return new Card(mFront, mBack, !mShowFront, mCardState);
+        return new Card(mFront, mBack, !mShowFront, mCardState, mAlpha);
     }
 
     @Override
@@ -95,6 +94,15 @@ public final class Card implements Parcelable, Serializable {
         return mCardState == CardState.MARKED;
     }
 
+    public float getAlpha() {
+        return mAlpha;
+    }
+
+    public void setAlpha(float alpha) {
+        this.mAlpha = alpha;
+        notifyObservers(this);
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -106,6 +114,7 @@ public final class Card implements Parcelable, Serializable {
         out.writeString(mBack);
         out.writeByte((byte) (mShowFront ? 1 : 0));
         out.writeSerializable(mCardState);
+        out.writeFloat(mAlpha);
     }
 
     public static final Parcelable.Creator<Card> CREATOR = new Parcelable.Creator<Card>() {
@@ -124,6 +133,7 @@ public final class Card implements Parcelable, Serializable {
         mShowFront = in.readByte() != 0;
         mToDisplay = mShowFront ? mFront : mBack;
         mCardState = (CardState) in.readSerializable();
+        mAlpha = in.readFloat();
     }
 
     private void notifyObservers(Card card) {

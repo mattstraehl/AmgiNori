@@ -14,7 +14,7 @@ import java.util.List;
 
 public final class CardLibrary {
 
-    private static final int CARD_POOL_SIZE = 12;
+    private static final int CARD_POOL_SIZE = 6;
 
     private static CardLibrary sCardLibrary;
 
@@ -57,7 +57,7 @@ public final class CardLibrary {
         for (int i = 0; i < size; i++) {
             Card card = mCards.get((int) (mCards.size() * Math.random()));
             result.add(card);
-            result.add(card.reversedCopy());
+            //result.add(card.reversedCopy());
         }
         return result;
     }

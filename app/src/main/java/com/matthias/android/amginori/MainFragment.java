@@ -27,6 +27,8 @@ import java.io.File;
 
 public class MainFragment extends Fragment {
 
+    private static final int FILE_SELECT_CODE = 0;
+
     private int mLevel = 9;
 
     private Button mStartButton;
@@ -38,8 +40,6 @@ public class MainFragment extends Fragment {
     private Uri mUri;
 
     ProgressDialog mProgress;
-
-    private static final int FILE_SELECT_CODE = 0;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
