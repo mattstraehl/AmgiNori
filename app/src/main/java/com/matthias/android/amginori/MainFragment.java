@@ -69,7 +69,7 @@ public class MainFragment extends Fragment {
             case R.id.menu_item_clear_cards:
                 SharedPreferencesHelper.get(getActivity()).remove("CollectionName");
                 getActivity().getApplicationContext().deleteDatabase(Anki2DbHelper.DATABASE_NAME);
-                CardLibrary.get(getActivity().getApplicationContext()).refresh();
+                CardLibrary.get(getActivity()).refresh();
                 invalidateSavedGame();
                 updateUI();
                 return true;
@@ -200,7 +200,7 @@ public class MainFragment extends Fragment {
         @Override
         protected void onPostExecute(Boolean result) {
             if (result) {
-                CardLibrary.get(getActivity().getApplicationContext()).refresh();
+                CardLibrary.get(getActivity()).refresh();
                 persistCollectionName(mUri);
                 invalidateSavedGame();
                 updateUI();

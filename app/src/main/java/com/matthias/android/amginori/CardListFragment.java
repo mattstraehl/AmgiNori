@@ -33,8 +33,8 @@ public class CardListFragment extends Fragment {
     }
 
     private void updateUI() {
-        Anki2DbHelper db = new Anki2DbHelper(getActivity());
-        List<String> list = db.getAllCards();
+        Anki2DbHelper database = new Anki2DbHelper(getActivity());
+        List<String> list = database.getAllCards();
         List<Card> cards = new ArrayList<>();
         for (String s : list) {
             String[] fields = s.split("\\x1f", -1);
