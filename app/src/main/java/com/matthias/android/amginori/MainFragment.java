@@ -1,12 +1,15 @@
 package com.matthias.android.amginori;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -28,6 +31,7 @@ import java.io.File;
 public class MainFragment extends Fragment {
 
     private static final int FILE_SELECT_CODE = 0;
+    private static final int REQUEST_READ_EXTERNAL_STORAGE_CODE = 1;
 
     private int mLevel = 9;
 
@@ -105,13 +109,11 @@ public class MainFragment extends Fragment {
         mImportButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-                intent.setType("application/apkg");
-                intent.addCategory(Intent.CATEGORY_OPENABLE);
-                try {
-                    startActivityForResult(Intent.createChooser(intent, null), FILE_SELECT_CODE);
-                } catch (android.content.ActivityNotFoundException ex) {
-                    Toast.makeText(getActivity(), "Please install a File Manager.", Toast.LENGTH_LONG).show();
+                if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE)
+                        != PackageManager.PERMISSION_GRANTED) {
+                    requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_READ_EXTERNAL_STORAGE_CODE);
+                } else {
+                    displayFileChooser();
                 }
             }
         });
@@ -177,6 +179,26 @@ public class MainFragment extends Fragment {
             mUri = data.getData();
             mProgress.show();
             new ImportTask().execute(mUri);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        if (requestCode == REQUEST_READ_EXTERNAL_STORAGE_CODE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                displayFileChooser();
+            }
+        }
+    }
+
+    private void displayFileChooser() {
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        intent.setType("application/apkg");
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        try {
+            startActivityForResult(Intent.createChooser(intent, null), FILE_SELECT_CODE);
+        } catch (android.content.ActivityNotFoundException ex) {
+            Toast.makeText(getActivity(), "Please install a File Manager.", Toast.LENGTH_LONG).show();
         }
     }
 
