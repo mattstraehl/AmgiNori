@@ -125,11 +125,11 @@ public class MainFragment extends Fragment {
                 switch (v.getId()) {
                     case R.id.option_easy:
                         if (checked)
-                            mLevel = 9;
+                            mLevel = 5;
                         break;
                     case R.id.option_hard:
                         if (checked)
-                            mLevel = 6;
+                            mLevel = 3;
                         break;
                 }
             }

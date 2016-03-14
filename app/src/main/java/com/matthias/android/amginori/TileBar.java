@@ -34,7 +34,7 @@ public final class TileBar {
         mScrollView.setScrollX(0);
     }
 
-    public synchronized Tile maybeOneTileContains(int x, int y) {
+    public Tile maybeOneTileContains(int x, int y) {
         for (int i = 0; i < mTiles.getChildCount(); i++) {
             Tile tile = (Tile) mTiles.getChildAt(i);
             Rect rect = new Rect();
@@ -67,10 +67,10 @@ public final class TileBar {
         }
     }
 
-    public synchronized void updateTiles() {
+    public void updateTiles() {
         for (int i = 0; i < mTiles.getChildCount(); i++) {
             final Tile tile = (Tile) mTiles.getChildAt(i);
-            if (tile.getCard().isActive()) {
+            if (tile.getCard().isEnabled()) {
                 float alpha = tile.getCard().getAlpha() - 0.1f;
                 if (alpha < 0) {
                     mTiles.removeView(tile);
@@ -84,12 +84,10 @@ public final class TileBar {
     public void addTile() {
         Tile tile = (Tile) LayoutInflater.from(mContext).inflate(R.layout.tile, mTiles, false);
         tile.init(mCards);
-        synchronized (this) {
-            mTiles.addView(tile, (int) (Math.random() * mTiles.getChildCount()));
-        }
+        mTiles.addView(tile, (int) (Math.random() * mTiles.getChildCount()));
     }
 
-    private synchronized int enabledTileCount() {
+    private int enabledTileCount() {
         int result = 0;
         for (int i = 0; i < mTiles.getChildCount(); i++) {
             Tile tile = (Tile) mTiles.getChildAt(i);

@@ -39,7 +39,7 @@ public class Tile extends Button implements Card.CardObserver {
     }
 
     public void setCard(Card card) {
-        mCard = card;
+        mCard = card.isMarked() ? card.active() : card;
         this.setText(mCard.mToDisplay);
         if (mCard.isDisabled()) {
             this.getBackground().setColorFilter(MATERIAL_DEEP_ORANGE_700);

@@ -249,11 +249,9 @@ public class BoardFragment extends Fragment implements TileUpdateRunnable.GameOv
 
     private void reinsertTile(Tile tile) {
         ViewGroup viewGroup = (ViewGroup) tile.getParent();
-        synchronized (viewGroup) {
-            viewGroup.removeView(tile);
-            tile.init(mCards);
-            viewGroup.addView(tile, (int) (Math.random() * viewGroup.getChildCount()));
-        }
+        viewGroup.removeView(tile);
+        tile.init(mCards);
+        viewGroup.addView(tile, (int) (Math.random() * viewGroup.getChildCount()));
     }
 
     private void createGameOverDialog() {

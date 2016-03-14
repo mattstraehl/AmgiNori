@@ -2,7 +2,7 @@ package com.matthias.android.amginori;
 
 public final class TileUpdateRunnable implements Runnable {
 
-    private static final long DELAY = 2000l;
+    private static final long DELAY = 3000l;
 
     private final TileBar mTileBar0;
     private final TileBar mTileBar1;
