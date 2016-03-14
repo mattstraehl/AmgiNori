@@ -28,6 +28,17 @@ public final class Anki2DbHelper extends SQLiteOpenHelper {
         return new File(DATABASE_PATH).exists();
     }
 
+    private boolean tableExists(String table) {
+        SQLiteDatabase database = this.getReadableDatabase();
+        Cursor cursor = database.rawQuery("SELECT COUNT(*) FROM sqlite_master WHERE name='"
+                + table + "' and type='table'", null);
+        cursor.moveToFirst();
+        int result = cursor.getInt(0);
+        cursor.close();
+        database.close();
+        return result > 0;
+    }
+
     @Override
     public void onCreate(SQLiteDatabase db) {
     }
@@ -38,7 +49,7 @@ public final class Anki2DbHelper extends SQLiteOpenHelper {
 
     public List<String> getAllCards() {
         List<String> result = new LinkedList<>();
-        if (!databaseExists()) {
+        if (!databaseExists() || !tableExists(NotesTable.NAME)) {
             return result;
         }
 

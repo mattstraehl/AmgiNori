@@ -53,8 +53,8 @@ public final class AnkiPackageImporter {
                 } catch (IOException e) {
                 }
             }
+            database.close();
         }
-        database.close();
         return true;
     }
 }
