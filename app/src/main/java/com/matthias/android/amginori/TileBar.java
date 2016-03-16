@@ -72,7 +72,7 @@ public final class TileBar {
             final Tile tile = (Tile) mTiles.getChildAt(i);
             if (tile.getCard().isEnabled()) {
                 float alpha = tile.getCard().getAlpha() - 0.1f;
-                if (alpha < 0) {
+                if (alpha < 0 && tile.getCard().isActive()) {
                     mTiles.removeView(tile);
                 } else {
                     tile.getCard().setAlpha(alpha);

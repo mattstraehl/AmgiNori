@@ -160,7 +160,11 @@ public class BoardFragment extends Fragment implements TileUpdateRunnable.GameOv
                                 gameOverCallback();
                             }
                         } else if (mSelected0 != null) {
-                            mSelected0.getCard().active();
+                            if (mSelected0.getCard().getAlpha() <= 0) {
+                                ((ViewGroup) mSelected0.getParent()).removeView(mSelected0);
+                            } else {
+                                mSelected0.getCard().active();
+                            }
                         }
                         mSelected0 = mSelected1 = null;
                         mLayout.mPoints.clear();
