@@ -47,16 +47,12 @@ public class BoardFragment extends Fragment implements TileUpdateRunnable.GameOv
     private double mScoreIncrement;
     private int mLevel;
 
-    private ArrayList<Card> mCards;
-
-    private float mFirstY;
-
     private Tile mSelected0;
     private Tile mSelected1;
-
     private TileBar mTileBar0;
     private TileBar mTileBar1;
 
+    private ArrayList<Card> mCards;
     private NavigableMap<Integer, TileBar> mBars = new TreeMap<>();
 
     private CustomLayout mLayout;
@@ -124,10 +120,38 @@ public class BoardFragment extends Fragment implements TileUpdateRunnable.GameOv
             }
         });
 
+        View.OnClickListener tileClickListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Tile tile = (Tile) view;
+                if (!tile.isEnabled()) {
+                    return;
+                }
+
+                if (mSelected0 == null) {
+                    mSelected0 = tile;
+                    mSelected0.getCard().marked();
+                } else if (mSelected0 == tile) {
+                    if (mSelected0.getCard().getAlpha() <= 0) {
+                        ((ViewGroup) mSelected0.getParent()).removeView(mSelected0);
+                    } else {
+                        mSelected0.getCard().active();
+                    }
+                    mSelected0 = null;
+                } else {
+                    if (mSelected0.getParent() != tile.getParent()) {
+                        mSelected1 = tile;
+                        updateTiles();
+                        mSelected0 = mSelected1 = null;
+                    }
+                }
+            }
+        };
+
         HorizontalScrollView scrollView0 = (HorizontalScrollView) view.findViewById(R.id.scroll_view_0);
         HorizontalScrollView scrollView1 = (HorizontalScrollView) view.findViewById(R.id.scroll_view_1);
-        mTileBar0 = new TileBar(getActivity(), scrollView0);
-        mTileBar1 = new TileBar(getActivity(), scrollView1);
+        mTileBar0 = new TileBar(getActivity(), scrollView0, tileClickListener);
+        mTileBar1 = new TileBar(getActivity(), scrollView1, tileClickListener);
 
         view.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -151,9 +175,8 @@ public class BoardFragment extends Fragment implements TileUpdateRunnable.GameOv
                             if (mSelected0 == null) {
                                 mSelected0 = tile;
                                 mSelected0.getCard().marked();
-                                mFirstY = event.getY();
                             } else if (mSelected1 == null) {
-                                if (!mBars.floorEntry((int) mFirstY).getKey().equals(mBars.floorEntry((int) event.getY()).getKey())) {
+                                if (mSelected0.getParent() != tile.getParent()) {
                                     mSelected1 = tile;
                                     mSelected1.getCard().marked();
                                 }
@@ -164,14 +187,7 @@ public class BoardFragment extends Fragment implements TileUpdateRunnable.GameOv
                     case MotionEvent.ACTION_UP:
                     case MotionEvent.ACTION_CANCEL:
                         if (mSelected0 != null && mSelected1 != null) {
-                            if (mSelected0.match(mSelected1)) {
-                                notifyMatch();
-                            } else {
-                                notifyClash();
-                            }
-                            if (TileBar.isGameOver(mTileBar0, mTileBar1)) {
-                                gameOverCallback();
-                            }
+                            updateTiles();
                         } else if (mSelected0 != null) {
                             if (mSelected0.getCard().getAlpha() <= 0) {
                                 ((ViewGroup) mSelected0.getParent()).removeView(mSelected0);
@@ -248,6 +264,17 @@ public class BoardFragment extends Fragment implements TileUpdateRunnable.GameOv
 
     private boolean outOfBounds(MotionEvent event) {
         return event.getY() < mTileBar0.getScrollView().getTop() || event.getY() > (mTileBar1.getScrollView().getTop()) + mTileBar1.getScrollView().getHeight();
+    }
+
+    private void updateTiles() {
+        if (mSelected0.match(mSelected1)) {
+            notifyMatch();
+        } else {
+            notifyClash();
+        }
+        if (TileBar.isGameOver(mTileBar0, mTileBar1)) {
+            gameOverCallback();
+        }
     }
 
     private void notifyMatch() {

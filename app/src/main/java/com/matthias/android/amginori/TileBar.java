@@ -3,6 +3,7 @@ package com.matthias.android.amginori;
 import android.content.Context;
 import android.graphics.Rect;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.HorizontalScrollView;
 
@@ -14,20 +15,22 @@ public final class TileBar {
     private final Context mContext;
     private final HorizontalScrollView mScrollView;
     private final ViewGroup mTiles;
+    private final View.OnClickListener mTileClickListener;
 
     private List<Card> mCards;
 
-    public TileBar(Context context, HorizontalScrollView scrollView) {
+    public TileBar(Context context, HorizontalScrollView scrollView, View.OnClickListener tileClickListener) {
         mContext = context.getApplicationContext();
         mScrollView = scrollView;
         mTiles = (ViewGroup) mScrollView.getChildAt(0);
+        mTileClickListener = tileClickListener;
     }
 
     public void init(List<Card> cards) {
         mCards = cards;
         mTiles.removeAllViews();
         for (int i = 0; i < 3; i++) {
-            Tile tile = (Tile) LayoutInflater.from(mContext).inflate(R.layout.tile, mTiles, false);
+            Tile tile = initTile();
             tile.init(cards);
             mTiles.addView(tile);
         }
@@ -61,7 +64,7 @@ public final class TileBar {
         mCards = cards;
         mTiles.removeAllViews();
         for (int i = 0; i < restored.size(); i++) {
-            Tile tile = (Tile) LayoutInflater.from(mContext).inflate(R.layout.tile, mTiles, false);
+            Tile tile = initTile();
             tile.setCard(restored.get(i));
             mTiles.addView(tile);
         }
@@ -82,9 +85,15 @@ public final class TileBar {
     }
 
     public void addTile() {
-        Tile tile = (Tile) LayoutInflater.from(mContext).inflate(R.layout.tile, mTiles, false);
+        Tile tile = initTile();
         tile.init(mCards);
         mTiles.addView(tile, (int) (Math.random() * mTiles.getChildCount()));
+    }
+
+    private Tile initTile() {
+        Tile tile = (Tile) LayoutInflater.from(mContext).inflate(R.layout.tile, mTiles, false);
+        tile.setOnClickListener(mTileClickListener);
+        return tile;
     }
 
     private int enabledTileCount() {
