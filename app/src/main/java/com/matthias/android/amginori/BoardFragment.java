@@ -187,6 +187,9 @@ public class BoardFragment extends Fragment implements TileUpdateRunnable.GameOv
             activity.getSupportActionBar().setSubtitle(collectionName);
         }
 
+        mLayout.mView0 = scrollView0;
+        mLayout.mView1 = scrollView1;
+
         return view;
     }
 
