@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Point;
+import android.media.AudioManager;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.support.v4.app.Fragment;
@@ -19,6 +20,7 @@ import android.view.ViewGroup;
 import android.widget.HorizontalScrollView;
 import android.widget.TextView;
 
+import com.matthias.android.amginori.AudioPlayer;
 import com.matthias.android.amginori.activities.BoardActivity;
 import com.matthias.android.amginori.Card;
 import com.matthias.android.amginori.CardLibrary;
@@ -61,6 +63,7 @@ public class BoardFragment extends Fragment implements TileUpdateRunnable.GameOv
     private TextView mScoreView;
     private TextView mBestScoreView;
 
+    private AudioPlayer mAudioPlayer;
     private Vibrator mVibrator;
 
     private Thread mUpdateThread;
@@ -96,6 +99,8 @@ public class BoardFragment extends Fragment implements TileUpdateRunnable.GameOv
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.setHasOptionsMenu(true);
+        getActivity().setVolumeControlStream(AudioManager.STREAM_MUSIC);
+        mAudioPlayer = new AudioPlayer(getActivity());
         mVibrator = (Vibrator) getContext().getSystemService(Context.VIBRATOR_SERVICE);
         mBestScore = SharedPreferencesHelper.get(getActivity()).getInt("BestScore", 0);
         if (SharedPreferencesHelper.get(getActivity()).getBoolean("SavedGameValid", false)) {
@@ -219,6 +224,12 @@ public class BoardFragment extends Fragment implements TileUpdateRunnable.GameOv
     }
 
     @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mAudioPlayer.release();
+    }
+
+    @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.fragment_board, menu);
@@ -240,12 +251,14 @@ public class BoardFragment extends Fragment implements TileUpdateRunnable.GameOv
     }
 
     private void notifyMatch() {
+        mAudioPlayer.playMatchSound();
         updateScore();
         reinsertTile(mSelected0);
         reinsertTile(mSelected1);
     }
 
     private void notifyClash() {
+        mAudioPlayer.playClashSound();
         if (mVibrator.hasVibrator()) {
             mVibrator.vibrate(100);
         }
