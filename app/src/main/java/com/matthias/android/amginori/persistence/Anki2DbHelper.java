@@ -55,7 +55,8 @@ public final class Anki2DbHelper extends SQLiteOpenHelper {
 
         SQLiteDatabase database = this.getReadableDatabase();
         Cursor cursor = database.rawQuery("SELECT " + NotesTable.Cols.FLDS
-                + " FROM " + NotesTable.NAME, null);
+                + " FROM " + NotesTable.NAME
+                + " ORDER BY " + NotesTable.Cols.ID + " DESC", null);
 
         String card;
         if (cursor.moveToFirst()) {

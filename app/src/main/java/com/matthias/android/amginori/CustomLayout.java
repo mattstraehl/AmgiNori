@@ -21,7 +21,7 @@ import java.util.List;
 
 public class CustomLayout extends RelativeLayout {
 
-    public List<Point> mPoints = new ArrayList<>();
+    public final List<Point> mPoints = new ArrayList<>();
     public View mView0;
     public View mView1;
 
@@ -58,6 +58,8 @@ public class CustomLayout extends RelativeLayout {
             mIntrinsicBlur.setInput(input);
             mIntrinsicBlur.forEach(output);
             output.copyTo(original);
+            input.destroy();
+            output.destroy();
 
             BitmapDrawable drawable = new BitmapDrawable(getContext().getResources(), original);
             drawable.setAlpha(63);
