@@ -22,7 +22,6 @@ import java.util.List;
 public class CustomLayout extends RelativeLayout {
 
     public List<Point> mPoints = new ArrayList<>();
-
     public View mView0;
     public View mView1;
 
@@ -46,7 +45,7 @@ public class CustomLayout extends RelativeLayout {
     @Override
     protected void dispatchDraw(Canvas canvas) {
         super.dispatchDraw(canvas);
-        if (mPoints.isEmpty()) {
+        if (mPoints.isEmpty() && mView0.getHeight() > 0) {
             Bitmap original = Bitmap.createBitmap(Math.max(mView0.getWidth(), mView1.getWidth()),
                     mView0.getHeight() + mView1.getHeight(), Bitmap.Config.ARGB_8888);
             Canvas c = new Canvas(original);

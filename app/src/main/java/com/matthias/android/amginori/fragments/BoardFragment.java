@@ -291,7 +291,7 @@ public class BoardFragment extends Fragment implements TileUpdateRunnable.GameOv
     }
 
     private void init() {
-        mCards = CardLibrary.get(getActivity()).getRandomCards(1);
+        mCards = CardLibrary.get(getActivity()).getRandomCards(2);
         CardLibrary.get(getActivity()).reset();
         mTileBar0.init(mCards);
         mTileBar1.init(mCards);
