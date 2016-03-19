@@ -1,4 +1,4 @@
-package com.matthias.android.amginori;
+package com.matthias.android.amginori.fragments;
 
 import android.app.Activity;
 import android.content.Context;
@@ -19,6 +19,14 @@ import android.view.ViewGroup;
 import android.widget.HorizontalScrollView;
 import android.widget.TextView;
 
+import com.matthias.android.amginori.activities.BoardActivity;
+import com.matthias.android.amginori.Card;
+import com.matthias.android.amginori.CardLibrary;
+import com.matthias.android.amginori.CustomLayout;
+import com.matthias.android.amginori.R;
+import com.matthias.android.amginori.Tile;
+import com.matthias.android.amginori.TileBar;
+import com.matthias.android.amginori.TileUpdateRunnable;
 import com.matthias.android.amginori.persistence.SharedPreferencesHelper;
 import com.matthias.android.amginori.utils.Base64;
 

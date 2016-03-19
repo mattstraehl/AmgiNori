@@ -1,4 +1,4 @@
-package com.matthias.android.amginori;
+package com.matthias.android.amginori.fragments;
 
 import android.Manifest;
 import android.app.Activity;
@@ -22,6 +22,9 @@ import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.Toast;
 
+import com.matthias.android.amginori.CardLibrary;
+import com.matthias.android.amginori.activities.CardListActivity;
+import com.matthias.android.amginori.R;
 import com.matthias.android.amginori.persistence.Anki2DbHelper;
 import com.matthias.android.amginori.persistence.AnkiPackageImporter;
 import com.matthias.android.amginori.persistence.SharedPreferencesHelper;

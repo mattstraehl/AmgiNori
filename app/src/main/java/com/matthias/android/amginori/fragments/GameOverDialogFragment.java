@@ -1,4 +1,4 @@
-package com.matthias.android.amginori;
+package com.matthias.android.amginori.fragments;
 
 import android.app.Activity;
 import android.app.Dialog;

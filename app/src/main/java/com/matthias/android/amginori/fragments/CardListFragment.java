@@ -1,4 +1,4 @@
-package com.matthias.android.amginori;
+package com.matthias.android.amginori.fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -10,6 +10,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.matthias.android.amginori.Card;
+import com.matthias.android.amginori.CardLibrary;
+import com.matthias.android.amginori.R;
 import com.matthias.android.amginori.persistence.Anki2DbHelper;
 
 import java.util.ArrayList;

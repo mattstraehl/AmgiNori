@@ -1,6 +1,8 @@
-package com.matthias.android.amginori;
+package com.matthias.android.amginori.activities;
 
 import android.support.v4.app.Fragment;
+
+import com.matthias.android.amginori.fragments.CardListFragment;
 
 public class CardListActivity extends SingleFragmentActivity {
 
