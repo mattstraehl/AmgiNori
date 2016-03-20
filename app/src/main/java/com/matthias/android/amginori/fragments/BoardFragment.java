@@ -127,23 +127,20 @@ public class BoardFragment extends Fragment implements TileUpdateRunnable.GameOv
                 if (!tile.isEnabled()) {
                     return;
                 }
-
                 if (mSelected0 == null) {
                     mSelected0 = tile;
                     mSelected0.getCard().marked();
                 } else if (mSelected0 == tile) {
-                    if (mSelected0.getCard().getAlpha() <= 0) {
-                        ((ViewGroup) mSelected0.getParent()).removeView(mSelected0);
-                    } else {
-                        mSelected0.getCard().active();
-                    }
+                    deselectTile();
                     mSelected0 = null;
+                } else if (mSelected0.getParent() == tile.getParent()) {
+                    deselectTile();
+                    mSelected0 = tile;
+                    mSelected0.getCard().marked();
                 } else {
-                    if (mSelected0.getParent() != tile.getParent()) {
-                        mSelected1 = tile;
-                        updateTiles();
-                        mSelected0 = mSelected1 = null;
-                    }
+                    mSelected1 = tile;
+                    updateTiles();
+                    mSelected0 = mSelected1 = null;
                 }
             }
         };
@@ -189,11 +186,7 @@ public class BoardFragment extends Fragment implements TileUpdateRunnable.GameOv
                         if (mSelected0 != null && mSelected1 != null) {
                             updateTiles();
                         } else if (mSelected0 != null) {
-                            if (mSelected0.getCard().getAlpha() <= 0) {
-                                ((ViewGroup) mSelected0.getParent()).removeView(mSelected0);
-                            } else {
-                                mSelected0.getCard().active();
-                            }
+                            deselectTile();
                         }
                         mSelected0 = mSelected1 = null;
                         mLayout.mPoints.clear();
@@ -274,6 +267,14 @@ public class BoardFragment extends Fragment implements TileUpdateRunnable.GameOv
         }
         if (TileBar.isGameOver(mTileBar0, mTileBar1)) {
             gameOverCallback();
+        }
+    }
+
+    private void deselectTile() {
+        if (mSelected0.getCard().getAlpha() <= 0) {
+            ((ViewGroup) mSelected0.getParent()).removeView(mSelected0);
+        } else {
+            mSelected0.getCard().active();
         }
     }
 
