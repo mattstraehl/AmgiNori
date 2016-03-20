@@ -1,6 +1,7 @@
 package com.matthias.android.amginori;
 
 import android.content.Context;
+import android.text.Html;
 
 import com.matthias.android.amginori.persistence.Anki2DbHelper;
 import com.matthias.android.amginori.persistence.Anki2DbSchema.NotesTable;
@@ -62,6 +63,10 @@ public final class CardLibrary {
         return result;
     }
 
+    public List<Card> getAllCards() {
+        return mCards;
+    }
+
     public void refresh() {
         Anki2DbHelper database = new Anki2DbHelper(mContext);
         mCards = new ArrayList<>();
@@ -72,7 +77,7 @@ public final class CardLibrary {
         } else {
             for (String card : cards) {
                 String[] fields = card.split(NotesTable.FIELD_SEPARATOR, -1);
-                mCards.add(new Card(fields[0].trim(), fields[1].trim()));
+                mCards.add(new Card(Html.fromHtml(fields[0]).toString(), Html.fromHtml(fields[1]).toString()));
             }
             mSize = mCards.size();
         }

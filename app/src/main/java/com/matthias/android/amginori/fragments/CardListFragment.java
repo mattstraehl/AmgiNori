@@ -13,9 +13,7 @@ import android.widget.TextView;
 import com.matthias.android.amginori.Card;
 import com.matthias.android.amginori.CardLibrary;
 import com.matthias.android.amginori.R;
-import com.matthias.android.amginori.persistence.Anki2DbHelper;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class CardListFragment extends Fragment {
@@ -36,14 +34,7 @@ public class CardListFragment extends Fragment {
     }
 
     private void updateUI() {
-        Anki2DbHelper database = new Anki2DbHelper(getActivity());
-        List<String> list = database.getAllCards();
-        List<Card> cards = new ArrayList<>();
-        for (String s : list) {
-            String[] fields = s.split("\\x1f", -1);
-            cards.add(new Card(fields[0], fields[1]));
-        }
-
+        List<Card> cards = CardLibrary.get(getActivity()).getAllCards();
         if (mAdapter == null) {
             mAdapter = new CardAdapter(cards);
             mRecyclerView.setAdapter(mAdapter);
@@ -51,7 +42,6 @@ public class CardListFragment extends Fragment {
             mAdapter.setCards(cards);
             mAdapter.notifyDataSetChanged();
         }
-
         int cardCount = CardLibrary.get(getActivity()).size();
         AppCompatActivity activity = (AppCompatActivity) getActivity();
         activity.getSupportActionBar().setSubtitle(cardCount + " cards shown");
