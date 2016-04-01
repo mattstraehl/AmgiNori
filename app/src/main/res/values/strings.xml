@@ -13,6 +13,8 @@
     <string name="option_easy">Easy</string>
     <string name="option_hard">Hard</string>
 
+    <string name="text_help">Start by adding cards or by importing an existing Anki card collection.</string>
+
     <string name="answer">Answer</string>
     <string name="back">Back</string>
     <string name="best">Best</string>

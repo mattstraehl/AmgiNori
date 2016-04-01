@@ -20,6 +20,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.matthias.android.amginori.CardLibrary;
@@ -38,12 +39,10 @@ public class MainFragment extends Fragment {
 
     private int mLevel = 9;
 
-    private Button mStartButton;
     private Button mResumeButton;
-    private Button mImportButton;
-    private Button mAddButton;
     private EditText mFront;
     private EditText mBack;
+    private TextView mHelpText;
 
     private Uri mUri;
 
@@ -90,8 +89,8 @@ public class MainFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_main, container, false);
 
-        mStartButton = (Button) view.findViewById(R.id.start_button);
-        mStartButton.setOnClickListener(new View.OnClickListener() {
+        Button startButton = (Button) view.findViewById(R.id.start_button);
+        startButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 invalidateSavedGame();
@@ -109,8 +108,8 @@ public class MainFragment extends Fragment {
             }
         });
 
-        mImportButton = (Button) view.findViewById(R.id.import_button);
-        mImportButton.setOnClickListener(new View.OnClickListener() {
+        Button importButton = (Button) view.findViewById(R.id.import_button);
+        importButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE)
@@ -122,8 +121,8 @@ public class MainFragment extends Fragment {
             }
         });
 
-        mAddButton = (Button) view.findViewById(R.id.add_button);
-        mAddButton.setOnClickListener(new View.OnClickListener() {
+        Button addButton = (Button) view.findViewById(R.id.add_button);
+        addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (mFront.getText().toString().trim().isEmpty()) {
@@ -183,8 +182,10 @@ public class MainFragment extends Fragment {
             }
         });
 
-        mStartButton.setFocusableInTouchMode(true);
-        mStartButton.requestFocus();
+        mHelpText = (TextView) view.findViewById(R.id.help_text);
+
+        startButton.setFocusableInTouchMode(true);
+        startButton.requestFocus();
 
         mProgress = new ProgressDialog(view.getContext());
         mProgress.setCancelable(false);
@@ -227,9 +228,11 @@ public class MainFragment extends Fragment {
     }
 
     private void updateUI() {
+        int librarySize = CardLibrary.get(getActivity()).size();
         AppCompatActivity activity = (AppCompatActivity) getActivity();
-        activity.getSupportActionBar().setSubtitle(CardLibrary.get(getActivity()).size() + " cards available");
+        activity.getSupportActionBar().setSubtitle(librarySize + " cards available");
         mResumeButton.setEnabled(SharedPreferencesHelper.get(getActivity()).getBoolean("SavedGameValid", false));
+        mHelpText.setVisibility(librarySize == 0 ? View.VISIBLE : View.INVISIBLE);
     }
 
     private void invalidateSavedGame() {
