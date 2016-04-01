@@ -1,10 +1,8 @@
 package com.matthias.android.amginori;
 
 import android.content.Context;
-import android.text.Html;
 
 import com.matthias.android.amginori.persistence.Anki2DbHelper;
-import com.matthias.android.amginori.persistence.Anki2DbSchema.NotesTable;
 import com.matthias.android.amginori.persistence.SharedPreferencesHelper;
 import com.matthias.android.amginori.utils.Base64;
 
@@ -67,18 +65,25 @@ public final class CardLibrary {
         return mCards;
     }
 
+    public void addCard(String front, String back) {
+        Anki2DbHelper database = new Anki2DbHelper(mContext);
+        database.addCard(front, back);
+        refresh();
+    }
+
+    public void deleteCard(Card card) {
+        Anki2DbHelper database = new Anki2DbHelper(mContext);
+        database.deleteCard(card);
+        refresh();
+    }
+
     public void refresh() {
         Anki2DbHelper database = new Anki2DbHelper(mContext);
-        mCards = new ArrayList<>();
-        List<String> cards = database.getAllCards();
-        if (cards.isEmpty()) {
+        mCards = database.getAllCards();
+        if (mCards.isEmpty()) {
             mCards.add(new Card("NO CARDS", "AVAILABLE"));
             mSize = 0;
         } else {
-            for (String card : cards) {
-                String[] fields = card.split(NotesTable.FIELD_SEPARATOR, -1);
-                mCards.add(new Card(Html.fromHtml(fields[0]).toString(), Html.fromHtml(fields[1]).toString()));
-            }
             mSize = mCards.size();
         }
     }

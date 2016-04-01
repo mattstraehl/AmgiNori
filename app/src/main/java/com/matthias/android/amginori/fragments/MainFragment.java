@@ -39,8 +39,9 @@ public class MainFragment extends Fragment {
     private int mLevel = 9;
 
     private Button mStartButton;
-    private Button mImportButton;
     private Button mResumeButton;
+    private Button mImportButton;
+    private Button mAddButton;
     private EditText mFront;
     private EditText mBack;
 
@@ -117,6 +118,26 @@ public class MainFragment extends Fragment {
                     requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_READ_EXTERNAL_STORAGE_CODE);
                 } else {
                     displayFileChooser();
+                }
+            }
+        });
+
+        mAddButton = (Button) view.findViewById(R.id.add_button);
+        mAddButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mFront.getText().toString().trim().isEmpty()) {
+                    mFront.setError("Cannot be blank");
+                } else if (mBack.getText().toString().trim().isEmpty()) {
+                    mBack.setError("Cannot be blank");
+                } else {
+                    CardLibrary.get(getActivity()).addCard(mFront.getText().toString().trim(), mBack.getText().toString().trim());
+                    invalidateSavedGame();
+                    updateUI();
+                    mFront.requestFocus();
+                    mFront.getText().clear();
+                    mBack.getText().clear();
+                    Toast.makeText(getActivity(), "1 card added.", Toast.LENGTH_SHORT).show();
                 }
             }
         });

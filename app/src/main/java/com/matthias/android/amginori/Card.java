@@ -11,6 +11,7 @@ public final class Card implements Parcelable, Serializable {
         ACTIVE, MARKED, DISABLED
     }
 
+    public final Long mId;
     public final String mFront;
     public final String mBack;
     public final boolean mShowFront;
@@ -23,10 +24,15 @@ public final class Card implements Parcelable, Serializable {
     private transient CardObserver mHead;
 
     public Card(String front, String back) {
-        this(front, back, Math.random() < 0.5 ? true : false, CardState.ACTIVE, 1f);
+        this(null, front, back);
     }
 
-    private Card(String front, String back, boolean showFront, CardState cardState, float alpha) {
+    public Card(Long id, String front, String back) {
+        this(id, front, back, Math.random() < 0.5 ? true : false, CardState.ACTIVE, 1f);
+    }
+
+    private Card(Long id, String front, String back, boolean showFront, CardState cardState, float alpha) {
+        mId = id;
         mFront = front;
         mBack = back;
         mShowFront = showFront;
@@ -40,32 +46,32 @@ public final class Card implements Parcelable, Serializable {
     }
 
     public Card active() {
-        Card result = new Card(mFront, mBack, mShowFront, CardState.ACTIVE, mAlpha);
+        Card result = new Card(mId, mFront, mBack, mShowFront, CardState.ACTIVE, mAlpha);
         result.mHead = mHead;
         notifyObservers(result);
         return result;
     }
 
     public Card marked() {
-        Card result = new Card(mFront, mBack, mShowFront, CardState.MARKED, mAlpha);
+        Card result = new Card(mId, mFront, mBack, mShowFront, CardState.MARKED, mAlpha);
         result.mHead = mHead;
         notifyObservers(result);
         return result;
     }
 
     public Card disabled() {
-        Card result = new Card(mFront, mBack, mShowFront, CardState.DISABLED, mAlpha);
+        Card result = new Card(mId, mFront, mBack, mShowFront, CardState.DISABLED, mAlpha);
         result.mHead = mHead;
         notifyObservers(result);
         return result;
     }
 
     public Card copy() {
-        return new Card(mFront, mBack, mShowFront, mCardState, mAlpha);
+        return new Card(mId, mFront, mBack, mShowFront, mCardState, mAlpha);
     }
 
     public Card reversedCopy() {
-        return new Card(mFront, mBack, !mShowFront, mCardState, mAlpha);
+        return new Card(mId, mFront, mBack, !mShowFront, mCardState, mAlpha);
     }
 
     @Override
@@ -128,6 +134,7 @@ public final class Card implements Parcelable, Serializable {
     };
 
     private Card(Parcel in) {
+        mId = null;
         mFront = in.readString();
         mBack = in.readString();
         mShowFront = in.readByte() != 0;

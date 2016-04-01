@@ -8,7 +8,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.matthias.android.amginori.Card;
 import com.matthias.android.amginori.CardLibrary;
@@ -51,20 +53,30 @@ public class CardListFragment extends Fragment {
 
         private TextView mFront;
         private TextView mBack;
+        private ImageView mDeleteIcon;
 
         private Card mCard;
 
         public CardHolder(View itemView) {
             super(itemView);
-
             mFront = (TextView) itemView.findViewById(R.id.list_item_card_front);
             mBack = (TextView) itemView.findViewById(R.id.list_item_card_back);
+            mDeleteIcon = (ImageView) itemView.findViewById(R.id.list_item_delete_icon);
+            mDeleteIcon.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    CardLibrary.get(getActivity()).deleteCard(mCard);
+                    updateUI();
+                    Toast.makeText(getActivity(), "Card (" + mCard.mFront + ", " + mCard.mBack + ") deleted.", Toast.LENGTH_SHORT).show();
+                }
+            });
         }
 
         public void bindCard(Card card) {
             mCard = card;
             mFront.setText(mCard.mFront);
             mBack.setText(mCard.mBack);
+            mDeleteIcon.setVisibility(mCard.mId == null ? View.GONE : View.VISIBLE);
         }
     }
 

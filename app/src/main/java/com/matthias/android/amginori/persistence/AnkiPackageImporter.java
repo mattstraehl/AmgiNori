@@ -36,8 +36,6 @@ public final class AnkiPackageImporter {
                 out.write(buffer, 0, n);
             }
             out.flush();
-            out.close();
-            zipFile.close();
         } catch (IOException e) {
             return false;
         } finally {
@@ -55,6 +53,6 @@ public final class AnkiPackageImporter {
             }
             database.close();
         }
-        return true;
+        return database.copyCardsOfAnkiCollection();
     }
 }

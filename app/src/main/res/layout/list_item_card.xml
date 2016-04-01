@@ -35,6 +35,12 @@
             android:textColor="@android:color/white"
             tools:text="Back" />
 
+        <ImageView
+            android:id="@+id/list_item_delete_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:src="@android:drawable/ic_menu_delete" />
+
     </LinearLayout>
 
     <View
