@@ -108,39 +108,6 @@ public class MainFragment extends Fragment {
             }
         });
 
-        Button importButton = (Button) view.findViewById(R.id.import_button);
-        importButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE)
-                        != PackageManager.PERMISSION_GRANTED) {
-                    requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_READ_EXTERNAL_STORAGE_CODE);
-                } else {
-                    displayFileChooser();
-                }
-            }
-        });
-
-        Button addButton = (Button) view.findViewById(R.id.add_button);
-        addButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mFront.getText().toString().trim().isEmpty()) {
-                    mFront.setError("Cannot be blank");
-                } else if (mBack.getText().toString().trim().isEmpty()) {
-                    mBack.setError("Cannot be blank");
-                } else {
-                    CardLibrary.get(getActivity()).addCard(mFront.getText().toString().trim(), mBack.getText().toString().trim());
-                    invalidateSavedGame();
-                    updateUI();
-                    mFront.requestFocus();
-                    mFront.getText().clear();
-                    mBack.getText().clear();
-                    Toast.makeText(getActivity(), "1 card added.", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-
         RadioButton optionEasy = (RadioButton) view.findViewById(R.id.option_easy);
         RadioButton optionHard = (RadioButton) view.findViewById(R.id.option_hard);
         View.OnClickListener listener = new View.OnClickListener() {
@@ -162,26 +129,46 @@ public class MainFragment extends Fragment {
         optionEasy.setOnClickListener(listener);
         optionHard.setOnClickListener(listener);
 
-        mFront = (EditText) view.findViewById(R.id.front_text);
-        mFront.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+        Button addButton = (Button) view.findViewById(R.id.add_button);
+        addButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (hasFocus) {
+            public void onClick(View v) {
+                boolean noErrorSet = true;
+                if (mFront.getText().toString().trim().isEmpty()) {
+                    mFront.setError(getString(R.string.cannot_be_blank));
+                    noErrorSet = false;
+                }
+                if (mBack.getText().toString().trim().isEmpty()) {
+                    mBack.setError(getString(R.string.cannot_be_blank));
+                    noErrorSet = false;
+                }
+                if (noErrorSet) {
+                    CardLibrary.get(getActivity()).addCard(mFront.getText().toString().trim(), mBack.getText().toString().trim());
+                    invalidateSavedGame();
+                    updateUI();
+                    mFront.requestFocus();
                     mFront.getText().clear();
-                }
-            }
-        });
-
-        mBack = (EditText) view.findViewById(R.id.back_text);
-        mBack.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (hasFocus) {
                     mBack.getText().clear();
+                    Toast.makeText(getActivity(), R.string.text_one_card_added, Toast.LENGTH_SHORT).show();
                 }
             }
         });
 
+        Button importButton = (Button) view.findViewById(R.id.import_button);
+        importButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE)
+                        != PackageManager.PERMISSION_GRANTED) {
+                    requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_READ_EXTERNAL_STORAGE_CODE);
+                } else {
+                    displayFileChooser();
+                }
+            }
+        });
+
+        mFront = (EditText) view.findViewById(R.id.front_text);
+        mBack = (EditText) view.findViewById(R.id.back_text);
         mHelpText = (TextView) view.findViewById(R.id.help_text);
 
         startButton.setFocusableInTouchMode(true);
@@ -189,7 +176,7 @@ public class MainFragment extends Fragment {
 
         mProgress = new ProgressDialog(view.getContext());
         mProgress.setCancelable(false);
-        mProgress.setMessage("Loading...");
+        mProgress.setMessage(getString(R.string.text_loading));
         mProgress.setProgressStyle(ProgressDialog.STYLE_SPINNER);
 
         return view;
@@ -223,14 +210,15 @@ public class MainFragment extends Fragment {
         try {
             startActivityForResult(Intent.createChooser(intent, null), FILE_SELECT_CODE);
         } catch (android.content.ActivityNotFoundException ex) {
-            Toast.makeText(getActivity(), "Please install a File Manager.", Toast.LENGTH_LONG).show();
+            Toast.makeText(getActivity(), R.string.text_install_file_manager, Toast.LENGTH_LONG).show();
         }
     }
 
     private void updateUI() {
         int librarySize = CardLibrary.get(getActivity()).size();
+        String cardsAvailable = getResources().getQuantityString(R.plurals.numberOfCardsAvailable, librarySize, librarySize);
         AppCompatActivity activity = (AppCompatActivity) getActivity();
-        activity.getSupportActionBar().setSubtitle(librarySize + " cards available");
+        activity.getSupportActionBar().setSubtitle(cardsAvailable);
         mResumeButton.setEnabled(SharedPreferencesHelper.get(getActivity()).getBoolean("SavedGameValid", false));
         mHelpText.setVisibility(librarySize == 0 ? View.VISIBLE : View.INVISIBLE);
     }
@@ -253,9 +241,11 @@ public class MainFragment extends Fragment {
                 persistCollectionName(mUri);
                 invalidateSavedGame();
                 updateUI();
-                Toast.makeText(getActivity(), CardLibrary.get(getActivity()).size() + " cards imported.", Toast.LENGTH_LONG).show();
+                int librarySize = CardLibrary.get(getActivity()).size();
+                String cardsImported = getResources().getQuantityString(R.plurals.numberOfCardsImported, librarySize, librarySize);
+                Toast.makeText(getActivity(), cardsImported, Toast.LENGTH_LONG).show();
             } else {
-                Toast.makeText(getActivity(), "Selected file is not a valid Anki Package.", Toast.LENGTH_LONG).show();
+                Toast.makeText(getActivity(), R.string.text_invalid_anki_package, Toast.LENGTH_LONG).show();
             }
             mProgress.dismiss();
         }

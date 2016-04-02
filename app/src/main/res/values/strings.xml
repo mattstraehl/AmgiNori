@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">AmgiNori</string>
 
+    <string name="action_about">About</string>
     <string name="action_restart">Restart</string>
     <string name="action_card_browser">Card Browser</string>
     <string name="action_clear_cards">Clear Cards</string>
@@ -13,16 +14,38 @@
     <string name="option_easy">Easy</string>
     <string name="option_hard">Hard</string>
 
+    <string name="text_confirm_clear_cards">Are you sure you want to delete all your cards?</string>
+    <string name="text_game_over">"Game Over!"</string>
     <string name="text_help">Start by adding cards or by importing an existing Anki card collection.</string>
+    <string name="text_install_file_manager">Please install a File Manager.</string>
+    <string name="text_invalid_anki_package">Selected file is not a valid Anki Package.</string>
+    <string name="text_loading">Loading…</string>
+    <string name="text_one_card_added">1 card added.</string>
 
     <string name="answer">Answer</string>
     <string name="back">Back</string>
     <string name="best">Best</string>
+    <string name="cancel">Cancel</string>
+    <string name="cannot_be_blank">Cannot be blank</string>
     <string name="front">Front</string>
     <string name="import_cards">Import Cards</string>
     <string name="new_card">New Card</string>
     <string name="new_game">New Game</string>
+    <string name="ok">OK</string>
     <string name="question">Question</string>
     <string name="score">Score</string>
+
+    <plurals name="numberOfCardsAvailable">
+        <item quantity="one">%d card available</item>
+        <item quantity="other">%d cards available</item>
+    </plurals>
+    <plurals name="numberOfCardsImported">
+        <item quantity="one">%d card imported.</item>
+        <item quantity="other">%d cards imported.</item>
+    </plurals>
+    <plurals name="numberOfCardsShown">
+        <item quantity="one">%d card shown</item>
+        <item quantity="other">%d cards shown</item>
+    </plurals>
 
 </resources>

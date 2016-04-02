@@ -80,8 +80,8 @@
         android:layout_toEndOf="@id/new_card"
         android:layout_toRightOf="@id/new_card"
         android:ems="11"
+        android:hint="@string/front"
         android:inputType="text"
-        android:text="@string/front"
         android:textAppearance="?android:attr/textAppearanceSmall" />
 
     <EditText
@@ -92,8 +92,8 @@
         android:layout_toEndOf="@id/new_card"
         android:layout_toRightOf="@id/new_card"
         android:ems="11"
+        android:hint="@string/back"
         android:inputType="text"
-        android:text="@string/back"
         android:textAppearance="?android:attr/textAppearanceSmall" />
 
     <Button

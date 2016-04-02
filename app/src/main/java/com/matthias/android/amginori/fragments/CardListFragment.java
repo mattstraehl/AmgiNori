@@ -44,9 +44,10 @@ public class CardListFragment extends Fragment {
             mAdapter.setCards(cards);
             mAdapter.notifyDataSetChanged();
         }
-        int cardCount = CardLibrary.get(getActivity()).size();
+        int librarySize = CardLibrary.get(getActivity()).size();
+        String cardsShown = getResources().getQuantityString(R.plurals.numberOfCardsShown, librarySize, librarySize);
         AppCompatActivity activity = (AppCompatActivity) getActivity();
-        activity.getSupportActionBar().setSubtitle(cardCount + " cards shown");
+        activity.getSupportActionBar().setSubtitle(cardsShown);
     }
 
     private class CardHolder extends RecyclerView.ViewHolder {
