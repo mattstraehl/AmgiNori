@@ -17,7 +17,7 @@ public final class AnkiPackageImporter {
 
     private static final int FILE_COPY_BUFFER_SIZE = 2048;
 
-    public static boolean importAnkiPackage(Context context, String dbName, Uri file) {
+    public static int importAnkiPackage(Context context, String dbName, Uri file) {
         Anki2DbHelper database = new Anki2DbHelper(context);
         database.getReadableDatabase();
         ZipFile zipFile = null;
@@ -26,7 +26,7 @@ public final class AnkiPackageImporter {
             zipFile = new ZipFile(new File(file.getPath()), ZipFile.OPEN_READ);
             ZipEntry ze = zipFile.getEntry(ZIP_FILE_ENTRY);
             if (ze == null || ze.isDirectory()) {
-                return false;
+                return -1;
             }
             InputStream in = zipFile.getInputStream(ze);
             out = new FileOutputStream(context.getDatabasePath(dbName).getAbsolutePath());
@@ -37,7 +37,7 @@ public final class AnkiPackageImporter {
             }
             out.flush();
         } catch (IOException e) {
-            return false;
+            return -1;
         } finally {
             if (out != null) {
                 try {

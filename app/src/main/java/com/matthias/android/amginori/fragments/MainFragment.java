@@ -237,22 +237,21 @@ public class MainFragment extends Fragment {
         SharedPreferencesHelper.get(getActivity()).remove("SavedGameValid");
     }
 
-    private class ImportTask extends AsyncTask<Uri, Void, Boolean> {
+    private class ImportTask extends AsyncTask<Uri, Void, Integer> {
 
         @Override
-        protected Boolean doInBackground(Uri... uris) {
+        protected Integer doInBackground(Uri... uris) {
             return AnkiPackageImporter.importAnkiPackage(getActivity(), Anki2DbHelper.DATABASE_NAME, uris[0]);
         }
 
         @Override
-        protected void onPostExecute(Boolean result) {
-            if (result) {
+        protected void onPostExecute(Integer result) {
+            if (result != -1) {
                 CardLibrary.get(getActivity()).refresh();
                 persistCollectionName(mUri);
                 invalidateSavedGame();
                 updateUI();
-                int librarySize = CardLibrary.get(getActivity()).size();
-                String cardsImported = getResources().getQuantityString(R.plurals.numberOfCardsImported, librarySize, librarySize);
+                String cardsImported = getResources().getQuantityString(R.plurals.numberOfCardsImported, result, result);
                 Toast.makeText(getActivity(), cardsImported, Toast.LENGTH_LONG).show();
             } else {
                 Toast.makeText(getActivity(), R.string.text_invalid_anki_package, Toast.LENGTH_LONG).show();
