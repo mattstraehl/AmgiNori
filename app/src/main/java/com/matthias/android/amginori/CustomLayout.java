@@ -34,7 +34,6 @@ public class CustomLayout extends RelativeLayout {
     public CustomLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
         //setWillNotDraw(false);
-        //mPaint.setColor(Color.argb(128, 200, 200, 200));
         mPaint.setColor(Color.WHITE);
         mPaint.setStyle(Paint.Style.STROKE);
         mPaint.setStrokeWidth(10);
@@ -45,7 +44,7 @@ public class CustomLayout extends RelativeLayout {
     @Override
     protected void dispatchDraw(Canvas canvas) {
         super.dispatchDraw(canvas);
-        if (mPoints.isEmpty() && mView0.getHeight() > 0) {
+        if (mPoints.isEmpty() && mView0.getHeight() > 0 && mView1.getHeight() > 0) {
             Bitmap original = Bitmap.createBitmap(Math.max(mView0.getWidth(), mView1.getWidth()),
                     mView0.getHeight() + mView1.getHeight(), Bitmap.Config.ARGB_8888);
             Canvas c = new Canvas(original);
@@ -106,7 +105,6 @@ public class CustomLayout extends RelativeLayout {
 
     /*@Override
     public boolean onInterceptTouchEvent(MotionEvent event) {
-        Log.w("myApp", "intercept: " + event.getAction());
         return false;
     }*/
 
