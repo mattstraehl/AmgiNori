@@ -12,4 +12,9 @@
         android:title="@string/action_clear_cards"
         app:showAsAction="never" />
 
+    <item
+        android:id="@+id/menu_item_about"
+        android:title="@string/action_about"
+        app:showAsAction="never" />
+
 </menu>

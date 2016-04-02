@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
@@ -74,11 +75,20 @@ public class MainFragment extends Fragment {
                 startActivity(intent);
                 return true;
             case R.id.menu_item_clear_cards:
-                SharedPreferencesHelper.get(getActivity()).remove("CollectionName");
-                getActivity().getApplicationContext().deleteDatabase(Anki2DbHelper.DATABASE_NAME);
-                CardLibrary.get(getActivity()).refresh();
-                invalidateSavedGame();
-                updateUI();
+                FragmentManager manager = getFragmentManager();
+                ConfirmationDialogFragment dialog = new ConfirmationDialogFragment(R.string.text_confirm_clear_cards) {
+                    @Override
+                    public void confirm() {
+                        SharedPreferencesHelper.get(getActivity()).remove("CollectionName");
+                        getActivity().getApplicationContext().deleteDatabase(Anki2DbHelper.DATABASE_NAME);
+                        CardLibrary.get(getActivity()).refresh();
+                        invalidateSavedGame();
+                        updateUI();
+                    }
+                };
+                dialog.show(manager, "dialog");
+                return true;
+            case R.id.menu_item_about:
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
