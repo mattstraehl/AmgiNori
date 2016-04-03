@@ -37,6 +37,7 @@ public class MainFragment extends Fragment {
 
     private static final int FILE_SELECT_CODE = 0;
     private static final int REQUEST_READ_EXTERNAL_STORAGE_CODE = 1;
+    private static final int CLEAR_CARDS_CONFIRMATION_DIALOG_CODE = 2;
 
     private int mLevel = 9;
 
@@ -76,16 +77,8 @@ public class MainFragment extends Fragment {
                 return true;
             case R.id.menu_item_clear_cards:
                 FragmentManager manager = getFragmentManager();
-                ConfirmationDialogFragment dialog = new ConfirmationDialogFragment(R.string.text_confirm_clear_cards) {
-                    @Override
-                    public void confirm() {
-                        SharedPreferencesHelper.get(getActivity()).remove("CollectionName");
-                        getActivity().getApplicationContext().deleteDatabase(Anki2DbHelper.DATABASE_NAME);
-                        CardLibrary.get(getActivity()).refresh();
-                        invalidateSavedGame();
-                        updateUI();
-                    }
-                };
+                ConfirmationDialogFragment dialog = ConfirmationDialogFragment.newInstance(R.string.text_confirm_clear_cards);
+                dialog.setTargetFragment(this, CLEAR_CARDS_CONFIRMATION_DIALOG_CODE);
                 dialog.show(manager, "dialog");
                 return true;
             case R.id.menu_item_about:
@@ -201,6 +194,12 @@ public class MainFragment extends Fragment {
             mUri = data.getData();
             mProgress.show();
             new ImportTask().execute(mUri);
+        } else if (requestCode == CLEAR_CARDS_CONFIRMATION_DIALOG_CODE) {
+            SharedPreferencesHelper.get(getActivity()).remove("CollectionName");
+            getActivity().getApplicationContext().deleteDatabase(Anki2DbHelper.DATABASE_NAME);
+            CardLibrary.get(getActivity()).refresh();
+            invalidateSavedGame();
+            updateUI();
         }
     }
 

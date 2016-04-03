@@ -1,5 +1,6 @@
 package com.matthias.android.amginori.fragments;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Point;
@@ -38,6 +39,7 @@ import java.util.TreeMap;
 public class BoardFragment extends Fragment implements TileUpdateRunnable.GameOverCallback {
 
     private static final String EXTRA_LEVEL = "com.matthias.android.amginori.level";
+    private static final int GAME_OVER_DIALOG_CODE = 0;
 
     private int mMatchCount = 0;
     private int mScore;
@@ -310,12 +312,8 @@ public class BoardFragment extends Fragment implements TileUpdateRunnable.GameOv
 
     private void createGameOverDialog() {
         FragmentManager manager = getFragmentManager();
-        GameOverDialogFragment dialog = new GameOverDialogFragment() {
-            @Override
-            public void confirm() {
-                reset();
-            }
-        };
+        GameOverDialogFragment dialog = new GameOverDialogFragment();
+        dialog.setTargetFragment(this, GAME_OVER_DIALOG_CODE);
         dialog.setCancelable(false);
         dialog.show(manager, "dialog");
     }
@@ -350,6 +348,16 @@ public class BoardFragment extends Fragment implements TileUpdateRunnable.GameOv
     public void gameOverCallback() {
         mUpdateThread.interrupt();
         createGameOverDialog();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode != Activity.RESULT_OK) {
+            return;
+        }
+        if (requestCode == GAME_OVER_DIALOG_CODE) {
+            reset();
+        }
     }
 
     public static Intent newIntent(Context packageContext, int level) {
