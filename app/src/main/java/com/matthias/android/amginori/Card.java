@@ -21,7 +21,7 @@ public final class Card implements Parcelable, Serializable {
 
     private volatile float mAlpha = 1f;
 
-    private transient CardObserver mHead;
+    private transient CardSubscriber mHead;
 
     public Card(String front, String back) {
         this(null, front, back);
@@ -48,21 +48,21 @@ public final class Card implements Parcelable, Serializable {
     public Card active() {
         Card result = new Card(mId, mFront, mBack, mShowFront, CardState.ACTIVE, mAlpha);
         result.mHead = mHead;
-        notifyObservers(result);
+        notifySubscriber(result);
         return result;
     }
 
     public Card marked() {
         Card result = new Card(mId, mFront, mBack, mShowFront, CardState.MARKED, mAlpha);
         result.mHead = mHead;
-        notifyObservers(result);
+        notifySubscriber(result);
         return result;
     }
 
     public Card disabled() {
         Card result = new Card(mId, mFront, mBack, mShowFront, CardState.DISABLED, mAlpha);
         result.mHead = mHead;
-        notifyObservers(result);
+        notifySubscriber(result);
         return result;
     }
 
@@ -106,7 +106,7 @@ public final class Card implements Parcelable, Serializable {
 
     public void setAlpha(float alpha) {
         this.mAlpha = alpha;
-        notifyObservers(this);
+        notifySubscriber(this);
     }
 
     @Override
@@ -143,22 +143,22 @@ public final class Card implements Parcelable, Serializable {
         mAlpha = in.readFloat();
     }
 
-    private void notifyObservers(Card card) {
-        CardObserver observer = mHead;
-        while (observer != null) {
-            observer.onNotify(card);
-            observer = observer.getNext();
+    private void notifySubscriber(Card card) {
+        CardSubscriber subscriber = mHead;
+        while (subscriber != null) {
+            subscriber.onNotify(card);
+            subscriber = subscriber.getNext();
         }
     }
 
-    public void addObserver(CardObserver observer) {
-        observer.setNext(mHead);
-        mHead = observer;
+    public void addSubscriber(CardSubscriber subscriber) {
+        subscriber.setNext(mHead);
+        mHead = subscriber;
     }
 
-    public interface CardObserver {
+    public interface CardSubscriber {
         void onNotify(Card card);
-        CardObserver getNext();
-        void setNext(CardObserver next);
+        CardSubscriber getNext();
+        void setNext(CardSubscriber next);
     }
 }

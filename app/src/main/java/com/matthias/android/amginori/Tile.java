@@ -7,11 +7,11 @@ import android.widget.Button;
 
 import java.util.List;
 
-public class Tile extends Button implements Card.CardObserver {
+public class Tile extends Button implements Card.CardSubscriber {
 
     private Card mCard;
 
-    private Card.CardObserver mNext;
+    private Card.CardSubscriber mNext;
 
     public static final LightingColorFilter MATERIAL_GREY_500 = new LightingColorFilter(0xffa3a3a3, 0x000000);
     public static final LightingColorFilter MATERIAL_DEEP_ORANGE_700 = new LightingColorFilter(0xffc53929, 0x000000);
@@ -47,7 +47,7 @@ public class Tile extends Button implements Card.CardObserver {
             this.getBackground().setColorFilter(null);
             this.setAlpha(mCard.getAlpha());
         }
-        mCard.addObserver(this);
+        mCard.addSubscriber(this);
     }
 
     @Override
@@ -69,12 +69,12 @@ public class Tile extends Button implements Card.CardObserver {
     }
 
     @Override
-    public Card.CardObserver getNext() {
+    public Card.CardSubscriber getNext() {
         return mNext;
     }
 
     @Override
-    public void setNext(Card.CardObserver next) {
+    public void setNext(Card.CardSubscriber next) {
         mNext = next;
     }
 }
