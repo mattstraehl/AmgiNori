@@ -1,67 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <LinearLayout
-        android:id="@+id/new_game_layout"
+    <TextView
+        android:id="@+id/new_game"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:gravity="center_vertical">
+        android:padding="40dp"
+        android:text="@string/new_game"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
 
-        <TextView
-            android:id="@+id/new_game"
+    <RadioGroup
+        android:id="@+id/level"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@id/new_game"
+        android:layout_toRightOf="@id/new_game"
+        android:orientation="horizontal"
+        android:padding="40dp">
+
+        <RadioButton
+            android:id="@+id/option_easy"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="25dp"
-            android:text="@string/new_game"
-            android:textAppearance="?android:attr/textAppearanceMedium" />
+            android:checked="true"
+            android:text="@string/option_easy" />
 
-        <RadioGroup
-            android:id="@+id/level"
+        <RadioButton
+            android:id="@+id/option_hard"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:padding="10dp">
+            android:text="@string/option_hard" />
 
-            <RadioButton
-                android:id="@+id/option_easy"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:checked="true"
-                android:text="@string/option_easy" />
+    </RadioGroup>
 
-            <RadioButton
-                android:id="@+id/option_hard"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/option_hard" />
+    <Button
+        android:id="@+id/start_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignEnd="@id/level"
+        android:layout_alignRight="@id/level"
+        android:layout_below="@id/level"
+        android:text="@string/button_start" />
 
-        </RadioGroup>
-
-        <Button
-            android:id="@+id/start_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="15dp"
-            android:layout_marginStart="15dp"
-            android:text="@string/button_start" />
-
-        <Button
-            android:id="@+id/resume_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/button_resume" />
-
-    </LinearLayout>
+    <Button
+        android:id="@+id/resume_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/level"
+        android:layout_toEndOf="@id/start_button"
+        android:layout_toRightOf="@id/start_button"
+        android:text="@string/button_resume" />
 
     <View
         android:id="@+id/divider_1"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_below="@id/new_game_layout"
-        android:layout_marginTop="5dp"
+        android:layout_below="@id/start_button"
+        android:layout_marginTop="30dp"
         android:background="@color/colorPrimaryDark" />
 
     <TextView
@@ -69,7 +66,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/divider_1"
-        android:padding="25dp"
+        android:padding="40dp"
         android:text="@string/new_card"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
@@ -77,12 +74,11 @@
         android:id="@+id/front_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/divider_1"
-        android:layout_marginLeft="10dp"
-        android:layout_marginStart="10dp"
+        android:layout_alignTop="@id/new_card"
+        android:layout_marginTop="45dp"
         android:layout_toEndOf="@id/new_card"
         android:layout_toRightOf="@id/new_card"
-        android:ems="13"
+        android:ems="11"
         android:hint="@string/front"
         android:inputType="text"
         android:textAppearance="?android:attr/textAppearanceSmall" />
@@ -92,11 +88,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/front_text"
-        android:layout_marginLeft="10dp"
-        android:layout_marginStart="10dp"
         android:layout_toEndOf="@id/new_card"
         android:layout_toRightOf="@id/new_card"
-        android:ems="13"
+        android:ems="11"
         android:hint="@string/back"
         android:inputType="text"
         android:textAppearance="?android:attr/textAppearanceSmall" />
@@ -105,17 +99,17 @@
         android:id="@+id/add_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@id/divider_2"
-        android:layout_alignEnd="@id/new_game_layout"
-        android:layout_alignRight="@id/new_game_layout"
+        android:layout_alignEnd="@id/resume_button"
+        android:layout_alignRight="@id/resume_button"
+        android:layout_below="@id/back_text"
         android:text="@string/button_add" />
 
     <View
         android:id="@+id/divider_2"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_below="@id/back_text"
-        android:layout_marginTop="5dp"
+        android:layout_below="@id/add_button"
+        android:layout_marginTop="30dp"
         android:background="@color/colorPrimaryDark" />
 
     <TextView
@@ -123,7 +117,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/divider_2"
-        android:padding="25dp"
+        android:padding="40dp"
         android:text="@string/import_cards"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
@@ -131,10 +125,10 @@
         android:id="@+id/import_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignEnd="@id/add_button"
-        android:layout_alignRight="@id/add_button"
+        android:layout_alignEnd="@id/resume_button"
+        android:layout_alignRight="@id/resume_button"
         android:layout_below="@id/divider_2"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="30dp"
         android:text="@string/button_import" />
 
     <TextView
@@ -142,10 +136,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/import_cards"
-        android:layout_marginLeft="25dp"
-        android:layout_marginRight="25dp"
-        android:layout_marginTop="5dp"
         android:gravity="center_horizontal"
+        android:padding="40dp"
         android:text="@string/text_help" />
 
 </RelativeLayout>

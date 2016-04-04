@@ -90,10 +90,11 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_below="@id/scroll_view_1"
-        android:paddingEnd="25dp"
-        android:paddingRight="25dp"
-        android:paddingTop="10dp"
-        android:text="@string/best" />
+        android:paddingEnd="150dp"
+        android:paddingRight="150dp"
+        android:paddingTop="30dp"
+        android:text="@string/best"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <TextView
         android:id="@+id/slash_label"
@@ -104,8 +105,9 @@
         android:layout_toStartOf="@id/best_label"
         android:paddingEnd="10dp"
         android:paddingRight="10dp"
-        android:paddingTop="10dp"
-        android:text="|" />
+        android:paddingTop="30dp"
+        android:text="|"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <TextView
         android:id="@+id/score_label"
@@ -116,8 +118,9 @@
         android:layout_toStartOf="@id/slash_label"
         android:paddingEnd="10dp"
         android:paddingRight="10dp"
-        android:paddingTop="10dp"
-        android:text="@string/score" />
+        android:paddingTop="30dp"
+        android:text="@string/score"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <TextView
         android:id="@+id/best_score"
@@ -126,9 +129,10 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_below="@id/best_label"
-        android:paddingEnd="25dp"
-        android:paddingRight="25dp"
-        android:paddingTop="5dp" />
+        android:paddingEnd="150dp"
+        android:paddingRight="150dp"
+        android:paddingTop="5dp"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <TextView
         android:id="@+id/current_score"
@@ -140,6 +144,7 @@
         android:paddingEnd="10dp"
         android:paddingRight="10dp"
         android:paddingTop="5dp"
+        android:textAppearance="?android:attr/textAppearanceMedium"
         android:textStyle="bold" />
 
 </com.matthias.android.amginori.CustomLayout>

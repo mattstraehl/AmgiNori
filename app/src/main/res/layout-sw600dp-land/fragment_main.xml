@@ -14,7 +14,7 @@
             android:id="@+id/new_game"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="25dp"
+            android:padding="40dp"
             android:text="@string/new_game"
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
@@ -23,7 +23,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:padding="10dp">
+            android:padding="30dp">
 
             <RadioButton
                 android:id="@+id/option_easy"
@@ -61,7 +61,7 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_below="@id/new_game_layout"
-        android:layout_marginTop="5dp"
+        android:layout_marginTop="15dp"
         android:background="@color/colorPrimaryDark" />
 
     <TextView
@@ -69,7 +69,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/divider_1"
-        android:padding="25dp"
+        android:padding="40dp"
         android:text="@string/new_card"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
@@ -78,11 +78,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/divider_1"
-        android:layout_marginLeft="10dp"
-        android:layout_marginStart="10dp"
+        android:layout_marginTop="20dp"
         android:layout_toEndOf="@id/new_card"
         android:layout_toRightOf="@id/new_card"
-        android:ems="13"
+        android:ems="16"
         android:hint="@string/front"
         android:inputType="text"
         android:textAppearance="?android:attr/textAppearanceSmall" />
@@ -92,11 +91,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/front_text"
-        android:layout_marginLeft="10dp"
-        android:layout_marginStart="10dp"
         android:layout_toEndOf="@id/new_card"
         android:layout_toRightOf="@id/new_card"
-        android:ems="13"
+        android:ems="16"
         android:hint="@string/back"
         android:inputType="text"
         android:textAppearance="?android:attr/textAppearanceSmall" />
@@ -114,8 +111,8 @@
         android:id="@+id/divider_2"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_below="@id/back_text"
-        android:layout_marginTop="5dp"
+        android:layout_below="@id/new_card"
+        android:layout_marginTop="15dp"
         android:background="@color/colorPrimaryDark" />
 
     <TextView
@@ -123,7 +120,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/divider_2"
-        android:padding="25dp"
+        android:padding="40dp"
         android:text="@string/import_cards"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
@@ -134,7 +131,7 @@
         android:layout_alignEnd="@id/add_button"
         android:layout_alignRight="@id/add_button"
         android:layout_below="@id/divider_2"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="30dp"
         android:text="@string/button_import" />
 
     <TextView
@@ -142,8 +139,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/import_cards"
-        android:layout_marginLeft="25dp"
-        android:layout_marginRight="25dp"
+        android:layout_marginLeft="40dp"
+        android:layout_marginRight="40dp"
         android:layout_marginTop="5dp"
         android:gravity="center_horizontal"
         android:text="@string/text_help" />
