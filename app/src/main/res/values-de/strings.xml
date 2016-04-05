@@ -1,0 +1,53 @@
+<resources>
+    <string name="app_name">AmgiNori</string>
+
+    <string name="action_about">Über</string>
+    <string name="action_restart">Neustarten</string>
+    <string name="action_card_browser">Karten Browser</string>
+    <string name="action_clear_cards">Karten löschen</string>
+
+    <string name="button_add">Hinzufügen</string>
+    <string name="button_import">APKG Datei wählen</string>
+    <string name="button_resume">Fortsetzen</string>
+    <string name="button_start">Starten</string>
+
+    <string name="option_easy">Einfach</string>
+    <string name="option_hard">Schwer</string>
+
+    <string name="text_confirm_clear_cards">Sind Sie sicher, dass Sie alle Ihre Karten löschen möchten?</string>
+    <string name="text_game_over">"Game Over!"</string>
+    <string name="text_help">Fügen Sie Karten hinzu oder importieren Sie eine bestehende Anki Kartenkollektion.</string>
+    <string name="text_install_file_manager">Bitte installieren Sie einen Dateimanager.</string>
+    <string name="text_invalid_anki_package">Gewählte Datei ist kein gültiges Anki Paket.</string>
+    <string name="text_loading">Loading…</string>
+    <string name="text_one_card_added">1 Karte hinzugefügt.</string>
+
+    <string name="answer">Antwort</string>
+    <string name="available">verfügbar</string>
+    <string name="back">Rückseite</string>
+    <string name="best">Rekord</string>
+    <string name="cancel">Abbrechen</string>
+    <string name="cannot_be_blank">Darf nicht leer sein</string>
+    <string name="front">Vorderseite</string>
+    <string name="import_cards">Importieren</string>
+    <string name="new_card">Neue Karte</string>
+    <string name="new_game">Neues Spiel</string>
+    <string name="no_cards">Keine Karten</string>
+    <string name="ok">OK</string>
+    <string name="question">Frage</string>
+    <string name="score">Punkte</string>
+
+    <plurals name="numberOfCardsAvailable">
+        <item quantity="one">%d Karte verfügbar</item>
+        <item quantity="other">%d Karten verfügbar</item>
+    </plurals>
+    <plurals name="numberOfCardsImported">
+        <item quantity="one">%d Karte importiert.</item>
+        <item quantity="other">%d Karten importiert.</item>
+    </plurals>
+    <plurals name="numberOfCardsShown">
+        <item quantity="one">%d Karte dargestellt</item>
+        <item quantity="other">%d Karten dargestellt</item>
+    </plurals>
+
+</resources>

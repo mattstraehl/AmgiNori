@@ -81,7 +81,8 @@ public final class CardLibrary {
         Anki2DbHelper database = new Anki2DbHelper(mContext);
         mCards = database.getAllCards();
         if (mCards.isEmpty()) {
-            mCards.add(new Card("NO CARDS", "AVAILABLE"));
+            mCards.add(new Card(mContext.getString(R.string.no_cards).toUpperCase(),
+                    mContext.getString(R.string.available).toUpperCase()));
             mSize = 0;
         } else {
             mSize = mCards.size();

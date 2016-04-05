@@ -23,6 +23,7 @@
     <string name="text_one_card_added">1 card added.</string>
 
     <string name="answer">Answer</string>
+    <string name="available">available</string>
     <string name="back">Back</string>
     <string name="best">Best</string>
     <string name="cancel">Cancel</string>
@@ -31,6 +32,7 @@
     <string name="import_cards">Import Cards</string>
     <string name="new_card">New Card</string>
     <string name="new_game">New Game</string>
+    <string name="no_cards">No Cards</string>
     <string name="ok">OK</string>
     <string name="question">Question</string>
     <string name="score">Score</string>
