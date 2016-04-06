@@ -31,8 +31,10 @@ import com.matthias.android.amginori.TileBar;
 import com.matthias.android.amginori.TileUpdateRunnable;
 import com.matthias.android.amginori.persistence.SharedPreferencesHelper;
 import com.matthias.android.amginori.utils.Base64;
+import com.matthias.android.amginori.utils.Interpolation;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.NavigableMap;
 import java.util.TreeMap;
 
@@ -63,6 +65,9 @@ public class BoardFragment extends Fragment implements TileUpdateRunnable.GameOv
     private Vibrator mVibrator;
 
     private Thread mUpdateThread;
+
+    private Point mPreviousIndex;
+    private int mStepSize;
 
     @Override
     public void onPause() {
@@ -145,6 +150,7 @@ public class BoardFragment extends Fragment implements TileUpdateRunnable.GameOv
             }
         };
 
+        mStepSize = getResources().getDimensionPixelSize(R.dimen.step_size);
         HorizontalScrollView scrollView0 = (HorizontalScrollView) view.findViewById(R.id.scroll_view_0);
         HorizontalScrollView scrollView1 = (HorizontalScrollView) view.findViewById(R.id.scroll_view_1);
         mTileBar0 = new TileBar(getActivity(), scrollView0, tileClickListener);
@@ -156,18 +162,19 @@ public class BoardFragment extends Fragment implements TileUpdateRunnable.GameOv
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
                     case MotionEvent.ACTION_MOVE:
-                        mLayout.mPoints.add(new Point((int) event.getX(), (int) event.getY()));
+                        Point point = new Point((int) event.getX(), (int) event.getY());
+                        mLayout.mPoints.add(point);
                         view.invalidate();
-                        TileBar tileBar;
-                        if (outOfBounds(event)) {
-                            return true;
-                        } else {
-                            tileBar = mBars.floorEntry((int) event.getY()).getValue();
-                        }
-                        Tile tile = tileBar.maybeOneTileContains((int) event.getX(), (int) event.getY());
-                        if (tile != null) {
-                            if (tile == mSelected0 || tile == mSelected1) {
-                                return true;
+                        List<Point> indexes = Interpolation.interpolate(mPreviousIndex, point, mStepSize);
+                        mPreviousIndex = point;
+                        for (Point index : indexes) {
+                            if (outOfBounds(index)) {
+                                continue;
+                            }
+                            TileBar tileBar = mBars.floorEntry(index.y).getValue();
+                            Tile tile = tileBar.maybeOneTileContains(index.x, index.y);
+                            if (tile == null || tile == mSelected0 || tile == mSelected1) {
+                                continue;
                             }
                             if (mSelected0 == null) {
                                 mSelected0 = tile;
@@ -178,7 +185,6 @@ public class BoardFragment extends Fragment implements TileUpdateRunnable.GameOv
                                     mSelected1.getCard().marked();
                                 }
                             }
-                            break;
                         }
                         break;
                     case MotionEvent.ACTION_UP:
@@ -189,6 +195,7 @@ public class BoardFragment extends Fragment implements TileUpdateRunnable.GameOv
                             deselectTile();
                         }
                         mSelected0 = mSelected1 = null;
+                        mPreviousIndex = null;
                         mLayout.mPoints.clear();
                         view.invalidate();
                         break;
@@ -255,8 +262,8 @@ public class BoardFragment extends Fragment implements TileUpdateRunnable.GameOv
         }
     }
 
-    private boolean outOfBounds(MotionEvent event) {
-        return event.getY() < mTileBar0.getScrollView().getTop() || event.getY() > (mTileBar1.getScrollView().getTop()) + mTileBar1.getScrollView().getHeight();
+    private boolean outOfBounds(Point index) {
+        return index.y < mTileBar0.getScrollView().getTop() || index.y > (mTileBar1.getScrollView().getTop()) + mTileBar1.getScrollView().getHeight();
     }
 
     private void updateTiles() {

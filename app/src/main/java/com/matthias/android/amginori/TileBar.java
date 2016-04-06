@@ -18,12 +18,14 @@ public final class TileBar {
     private final View.OnClickListener mTileClickListener;
 
     private List<Card> mCards;
+    private int mInset;
 
     public TileBar(Context context, HorizontalScrollView scrollView, View.OnClickListener tileClickListener) {
         mContext = context.getApplicationContext();
         mScrollView = scrollView;
         mTiles = (ViewGroup) mScrollView.getChildAt(0);
         mTileClickListener = tileClickListener;
+        mInset = context.getResources().getDimensionPixelSize(R.dimen.inset);
     }
 
     public void init(List<Card> cards) {
@@ -42,7 +44,7 @@ public final class TileBar {
             Tile tile = (Tile) mTiles.getChildAt(i);
             Rect rect = new Rect();
             tile.getHitRect(rect);
-            rect.inset(25, 25);
+            rect.inset(mInset, mInset);
             if (tile.isEnabled() && rect.contains(x + mScrollView.getScrollX() - mScrollView.getLeft(),
                     y - mScrollView.getTop())) {
                 return tile;

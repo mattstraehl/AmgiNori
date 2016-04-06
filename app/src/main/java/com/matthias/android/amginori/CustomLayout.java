@@ -26,7 +26,6 @@ public class CustomLayout extends RelativeLayout {
     public View mView1;
 
     private final Paint mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-
     private final RenderScript mRenderScript;
     private final ScriptIntrinsicBlur mIntrinsicBlur;
     private Bitmap mOriginal = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888);
@@ -36,7 +35,7 @@ public class CustomLayout extends RelativeLayout {
         //setWillNotDraw(false);
         mPaint.setColor(Color.WHITE);
         mPaint.setStyle(Paint.Style.STROKE);
-        mPaint.setStrokeWidth(10);
+        mPaint.setStrokeWidth(getResources().getDimensionPixelSize(R.dimen.stroke_width));
         mRenderScript = RenderScript.create(context);
         mIntrinsicBlur = ScriptIntrinsicBlur.create(mRenderScript, Element.U8_4(mRenderScript));
     }
