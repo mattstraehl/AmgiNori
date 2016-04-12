@@ -40,8 +40,9 @@ public final class CardLibrary {
         if (mCardPool.isEmpty()) {
             Card[] newCards = new Card[CARD_POOL_SIZE];
             // Insert cards in this order: [c_1, r_n, c_2, r_n-1, ... c_n-1, r_2, c_n, r_1]
+            int offset = (int) (cards.size() * Math.random());
             for (int i = 0; i < CARD_POOL_SIZE / 2; i++) {
-                newCards[i * 2] = cards.get((int) (cards.size() * Math.random())).copy();
+                newCards[i * 2] = cards.get(offset++ % cards.size()).copy();
             }
             for (int i = 0; i < CARD_POOL_SIZE / 2; i++) {
                 newCards[CARD_POOL_SIZE - 1 - (i * 2)] = newCards[i * 2].reversedCopy();
@@ -56,7 +57,7 @@ public final class CardLibrary {
         for (int i = 0; i < size; i++) {
             Card card = mCards.get((int) (mCards.size() * Math.random()));
             result.add(card);
-            //result.add(card.reversedCopy());
+            result.add(card.reversedCopy());
         }
         return result;
     }

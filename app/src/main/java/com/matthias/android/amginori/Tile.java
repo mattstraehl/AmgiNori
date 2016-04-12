@@ -13,8 +13,8 @@ public class Tile extends Button implements Card.CardSubscriber {
 
     private Card.CardSubscriber mNext;
 
-    public static final LightingColorFilter MATERIAL_GREY_500 = new LightingColorFilter(0xffa3a3a3, 0x000000);
-    public static final LightingColorFilter MATERIAL_DEEP_ORANGE_700 = new LightingColorFilter(0xffc53929, 0x000000);
+    private static final LightingColorFilter MATERIAL_GREY_500 = new LightingColorFilter(0xffa3a3a3, 0x000000);
+    private static final LightingColorFilter MATERIAL_DEEP_ORANGE_700 = new LightingColorFilter(0xffc53929, 0x000000);
 
     public Tile(Context context, AttributeSet attrs) {
         super(context, attrs);

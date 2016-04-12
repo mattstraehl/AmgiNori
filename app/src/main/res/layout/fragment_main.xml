@@ -9,7 +9,8 @@
         android:layout_height="wrap_content"
         android:padding="25dp"
         android:text="@string/new_game"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="@android:color/white" />
 
     <RadioGroup
         android:id="@+id/level"
@@ -68,7 +69,8 @@
         android:layout_below="@id/divider_1"
         android:padding="25dp"
         android:text="@string/new_card"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="@android:color/white" />
 
     <EditText
         android:id="@+id/front_text"
@@ -119,7 +121,8 @@
         android:layout_below="@id/divider_2"
         android:padding="25dp"
         android:text="@string/import_cards"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="@android:color/white" />
 
     <Button
         android:id="@+id/import_button"

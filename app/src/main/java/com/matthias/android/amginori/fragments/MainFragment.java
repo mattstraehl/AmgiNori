@@ -39,7 +39,7 @@ public class MainFragment extends Fragment {
     private static final int REQUEST_READ_EXTERNAL_STORAGE_CODE = 1;
     private static final int CLEAR_CARDS_CONFIRMATION_DIALOG_CODE = 2;
 
-    private int mLevel = 9;
+    private int mLevel = 5;
 
     private Button mResumeButton;
     private EditText mFront;
