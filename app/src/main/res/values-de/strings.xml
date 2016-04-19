@@ -14,6 +14,7 @@
     <string name="option_easy">Einfach</string>
     <string name="option_hard">Schwer</string>
 
+    <string name="text_card_deleted">Karte (%1$s, %2$s) gelöscht.</string>
     <string name="text_confirm_clear_cards">Sind Sie sicher, dass Sie alle Ihre Karten löschen möchten?</string>
     <string name="text_game_over">"Game Over!"</string>
     <string name="text_help">Fügen Sie Karten hinzu oder importieren Sie eine bestehende Anki Kartenkollektion.</string>

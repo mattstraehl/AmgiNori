@@ -22,6 +22,7 @@ public class CardListFragment extends Fragment {
 
     private RecyclerView mRecyclerView;
     private CardAdapter mAdapter;
+    private Toast mToast;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -29,6 +30,7 @@ public class CardListFragment extends Fragment {
 
         mRecyclerView = (RecyclerView) view.findViewById(R.id.card_recycler_view);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        mToast = Toast.makeText(getActivity(), "", Toast.LENGTH_SHORT);
 
         updateUI();
 
@@ -68,7 +70,8 @@ public class CardListFragment extends Fragment {
                 public void onClick(View v) {
                     CardLibrary.get(getActivity()).deleteCard(mCard);
                     updateUI();
-                    Toast.makeText(getActivity(), "Card (" + mCard.mFront + ", " + mCard.mBack + ") deleted.", Toast.LENGTH_SHORT).show();
+                    mToast.setText(getResources().getString(R.string.text_card_deleted, mCard.mFront, mCard.mBack));
+                    mToast.show();
                 }
             });
         }
