@@ -84,7 +84,7 @@ public class BoardFragment extends Fragment implements TileUpdateRunnable.GameOv
             mBestScore = mScore;
         }
 
-        SharedPreferencesHelper.get(getActivity()).putInt("BestScore", mBestScore);
+        SharedPreferencesHelper.get(getActivity()).putInt("BestScore" + mLevel, mBestScore);
         SharedPreferencesHelper.get(getActivity()).putInt("MatchCount", mMatchCount);
         SharedPreferencesHelper.get(getActivity()).putInt("Level", mLevel);
 
@@ -104,13 +104,13 @@ public class BoardFragment extends Fragment implements TileUpdateRunnable.GameOv
         getActivity().setVolumeControlStream(AudioManager.STREAM_MUSIC);
         mAudioPlayer = new AudioPlayer(getActivity());
         mVibrator = (Vibrator) getContext().getSystemService(Context.VIBRATOR_SERVICE);
-        mBestScore = SharedPreferencesHelper.get(getActivity()).getInt("BestScore", 0);
         if (SharedPreferencesHelper.get(getActivity()).getBoolean("SavedGameValid", false)) {
             mMatchCount = SharedPreferencesHelper.get(getActivity()).getInt("MatchCount", 0);
-            mLevel = SharedPreferencesHelper.get(getActivity()).getInt("Level", 9);
+            mLevel = SharedPreferencesHelper.get(getActivity()).getInt("Level", 4500);
         } else {
-            mLevel = getActivity().getIntent().getIntExtra(EXTRA_LEVEL, 9);
+            mLevel = getActivity().getIntent().getIntExtra(EXTRA_LEVEL, 4500);
         }
+        mBestScore = SharedPreferencesHelper.get(getActivity()).getInt("BestScore" + mLevel, 0);
         mScoreIncrement = Math.log(1 + CardLibrary.get(getActivity()).size());
         mScore = (int) (mMatchCount * mScoreIncrement);
     }
@@ -139,14 +139,9 @@ public class BoardFragment extends Fragment implements TileUpdateRunnable.GameOv
                 } else if (mSelected0 == tile) {
                     deselectTile();
                     mSelected0 = null;
-                } else if (mSelected0.getParent() == tile.getParent()) {
-                    deselectTile();
-                    mSelected0 = tile;
-                    mSelected0.getCard().marked();
                 } else {
                     mSelected1 = tile;
                     updateTiles();
-                    mSelected0 = mSelected1 = null;
                 }
             }
         };
@@ -174,17 +169,15 @@ public class BoardFragment extends Fragment implements TileUpdateRunnable.GameOv
                             }
                             TileBar tileBar = mBars.floorEntry(index.y).getValue();
                             Tile tile = tileBar.maybeOneTileContains(index.x, index.y);
-                            if (tile == null || tile == mSelected0 || tile == mSelected1) {
+                            if (tile == null) {
                                 continue;
                             }
                             if (mSelected0 == null) {
                                 mSelected0 = tile;
                                 mSelected0.getCard().marked();
                             } else if (mSelected1 == null) {
-                                if (mSelected0.getParent() != tile.getParent()) {
-                                    mSelected1 = tile;
-                                    mSelected1.getCard().marked();
-                                }
+                                mSelected1 = tile;
+                                mSelected1.getCard().marked();
                             }
                         }
                         break;
@@ -192,10 +185,7 @@ public class BoardFragment extends Fragment implements TileUpdateRunnable.GameOv
                     case MotionEvent.ACTION_CANCEL:
                         if (mSelected0 != null && mSelected1 != null) {
                             updateTiles();
-                        } else if (mSelected0 != null) {
-                            deselectTile();
                         }
-                        mSelected0 = mSelected1 = null;
                         mPreviousIndex = null;
                         mLayout.mPoints.clear();
                         view.invalidate();
@@ -207,9 +197,7 @@ public class BoardFragment extends Fragment implements TileUpdateRunnable.GameOv
 
         mLayout = (CustomLayout) view.findViewById(R.id.relative_layout);
         mScoreView = (TextView) view.findViewById(R.id.current_score);
-        mScoreView.setText(Integer.toString(mScore));
         mBestScoreView = (TextView) view.findViewById(R.id.best_score);
-        mBestScoreView.setText(Integer.toString(mBestScore));
 
         String collectionName = SharedPreferencesHelper.get(getActivity()).getString("CollectionName", null);
         if (collectionName != null) {
@@ -237,6 +225,7 @@ public class BoardFragment extends Fragment implements TileUpdateRunnable.GameOv
         } else {
             init();
         }
+        updateUI();
         startUpdateThread();
     }
 
@@ -276,6 +265,7 @@ public class BoardFragment extends Fragment implements TileUpdateRunnable.GameOv
         if (TileBar.isGameOver(mTileBar0, mTileBar1)) {
             gameOverCallback();
         }
+        mSelected0 = mSelected1 = null;
     }
 
     private void deselectTile() {
@@ -347,14 +337,18 @@ public class BoardFragment extends Fragment implements TileUpdateRunnable.GameOv
         }
         mScore = 0;
         mMatchCount = 0;
-        mScoreView.setText(Integer.toString(mScore));
-        mBestScoreView.setText(Integer.toString(mBestScore));
         init();
+        updateUI();
         startUpdateThread();
     }
 
+    private void updateUI() {
+        mScoreView.setText(Integer.toString(mScore));
+        mBestScoreView.setText(Integer.toString(mBestScore));
+    }
+
     private void startUpdateThread() {
-        mUpdateThread = new Thread(new TileUpdateRunnable(mTileBar0, mTileBar1, this));
+        mUpdateThread = new Thread(new TileUpdateRunnable(mTileBar0, mTileBar1, mLevel, this));
         mUpdateThread.start();
     }
 
@@ -375,8 +369,8 @@ public class BoardFragment extends Fragment implements TileUpdateRunnable.GameOv
     }
 
     public static Intent newIntent(Context packageContext, int level) {
-        Intent i = new Intent(packageContext, BoardActivity.class);
-        i.putExtra(EXTRA_LEVEL, level);
-        return i;
+        Intent intent = new Intent(packageContext, BoardActivity.class);
+        intent.putExtra(EXTRA_LEVEL, level);
+        return intent;
     }
 }

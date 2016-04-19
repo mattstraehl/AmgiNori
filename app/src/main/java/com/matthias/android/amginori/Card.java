@@ -28,7 +28,7 @@ public final class Card implements Parcelable, Serializable {
     }
 
     public Card(Long id, String front, String back) {
-        this(id, front, back, Math.random() < 0.5 ? true : false, CardState.ACTIVE, 1f);
+        this(id, front, back, Math.random() < 0.5, CardState.ACTIVE, 1f);
     }
 
     private Card(Long id, String front, String back, boolean showFront, CardState cardState, float alpha) {

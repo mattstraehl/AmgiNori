@@ -39,7 +39,7 @@ public class MainFragment extends Fragment {
     private static final int REQUEST_READ_EXTERNAL_STORAGE_CODE = 1;
     private static final int CLEAR_CARDS_CONFIRMATION_DIALOG_CODE = 2;
 
-    private int mLevel = 5;
+    private int mLevel = 4500;
 
     private Button mResumeButton;
     private EditText mFront;
@@ -120,11 +120,11 @@ public class MainFragment extends Fragment {
                 switch (v.getId()) {
                     case R.id.option_easy:
                         if (checked)
-                            mLevel = 5;
+                            mLevel = 4500;
                         break;
                     case R.id.option_hard:
                         if (checked)
-                            mLevel = 3;
+                            mLevel = 3000;
                         break;
                 }
             }
@@ -173,9 +173,6 @@ public class MainFragment extends Fragment {
         mFront = (EditText) view.findViewById(R.id.front_text);
         mBack = (EditText) view.findViewById(R.id.back_text);
         mHelpText = (TextView) view.findViewById(R.id.help_text);
-
-        startButton.setFocusableInTouchMode(true);
-        startButton.requestFocus();
 
         mProgress = new ProgressDialog(view.getContext());
         mProgress.setCancelable(false);

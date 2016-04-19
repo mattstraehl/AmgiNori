@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Point;
+import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.support.v8.renderscript.Allocation;
 import android.support.v8.renderscript.Element;
@@ -14,6 +15,7 @@ import android.support.v8.renderscript.RenderScript;
 import android.support.v8.renderscript.ScriptIntrinsicBlur;
 import android.util.AttributeSet;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
 import java.util.ArrayList;
@@ -44,11 +46,18 @@ public class CustomLayout extends RelativeLayout {
     protected void dispatchDraw(Canvas canvas) {
         super.dispatchDraw(canvas);
         if (mPoints.isEmpty() && mView0.getHeight() > 0 && mView1.getHeight() > 0) {
-            Bitmap original = Bitmap.createBitmap(Math.max(mView0.getWidth(), mView1.getWidth()),
-                    mView0.getHeight() + mView1.getHeight(), Bitmap.Config.ARGB_8888);
+            int width = Math.max(mView0.getWidth(), mView1.getWidth());
+            Bitmap original = Bitmap.createBitmap(width, mView0.getHeight() + mView1.getHeight(), Bitmap.Config.ARGB_8888);
+            Rect rect0 = new Rect(0, 0, width, mView0.getHeight());
+            Rect rect1 = new Rect(0, mView0.getHeight(), width, mView0.getHeight() + mView1.getHeight());
+
             Canvas c = new Canvas(original);
-            c.drawBitmap(loadBitmapFromView(mView0), Math.max(0f, mView1.getWidth() - mView0.getWidth()) / 2, 0f, null);
-            c.drawBitmap(loadBitmapFromView(mView1), Math.max(0f, mView0.getWidth() - mView1.getWidth()) / 2, mView0.getHeight(), null);
+            Bitmap bitmap = loadBitmapFromView(mView0);
+            c.drawBitmap(bitmap, null, rect0, null);
+            bitmap.recycle();
+            bitmap = loadBitmapFromView(mView1);
+            c.drawBitmap(bitmap, null, rect1, null);
+            bitmap.recycle();
 
             Allocation input = Allocation.createFromBitmap(mRenderScript, original);
             Allocation output = Allocation.createTyped(mRenderScript, input.getType());
@@ -107,11 +116,12 @@ public class CustomLayout extends RelativeLayout {
         return false;
     }*/
 
-    private static Bitmap loadBitmapFromView(View v) {
-        Bitmap b = Bitmap.createBitmap(v.getWidth(), v.getHeight(), Bitmap.Config.ARGB_8888);
-        Canvas c = new Canvas(b);
+    private static Bitmap loadBitmapFromView(View view) {
+        View v = ((ViewGroup) view).getChildAt(0);
+        Bitmap bitmap = Bitmap.createBitmap(v.getWidth(), v.getHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
         v.layout(v.getLeft(), v.getTop(), v.getRight(), v.getBottom());
-        v.draw(c);
-        return b;
+        v.draw(canvas);
+        return bitmap;
     }
 }

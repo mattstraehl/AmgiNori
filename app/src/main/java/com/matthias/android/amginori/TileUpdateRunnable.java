@@ -2,17 +2,17 @@ package com.matthias.android.amginori;
 
 public final class TileUpdateRunnable implements Runnable {
 
-    private static final long DELAY = 3000l;
-
     private final TileBar mTileBar0;
     private final TileBar mTileBar1;
+    private final long mMillisPerUpdate;
     private final GameOverCallback mCallback;
 
     private long mCount = 0l;
 
-    public TileUpdateRunnable(TileBar tileBar0, TileBar tileBar1, GameOverCallback callback) {
+    public TileUpdateRunnable(TileBar tileBar0, TileBar tileBar1, long millisPerUpdate, GameOverCallback callback) {
         mTileBar0 = tileBar0;
         mTileBar1 = tileBar1;
+        mMillisPerUpdate = millisPerUpdate;
         mCallback = callback;
     }
 
@@ -25,7 +25,7 @@ public final class TileUpdateRunnable implements Runnable {
             }
             updateTiles(mTileBar0, mTileBar1);
             try {
-                Thread.sleep(TileUpdateRunnable.DELAY);
+                Thread.sleep(mMillisPerUpdate);
             } catch (InterruptedException e) {
                 break;
             }
