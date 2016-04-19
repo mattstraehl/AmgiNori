@@ -45,7 +45,7 @@ public final class TileBar {
             Rect rect = new Rect();
             tile.getHitRect(rect);
             rect.inset(mInset, mInset);
-            if (tile.isEnabled() && rect.contains(x + mScrollView.getScrollX() - mScrollView.getLeft(),
+            if (tile.getCard().isActive() && rect.contains(x + mScrollView.getScrollX() - mScrollView.getLeft(),
                     y - mScrollView.getTop())) {
                 return tile;
             }
@@ -74,10 +74,10 @@ public final class TileBar {
 
     public void updateTiles() {
         for (int i = 0; i < mTiles.getChildCount(); i++) {
-            final Tile tile = (Tile) mTiles.getChildAt(i);
-            if (tile.getCard().isEnabled()) {
+            Tile tile = (Tile) mTiles.getChildAt(i);
+            if (tile.getCard().isActive() || tile.getCard().isMarked()) {
                 float alpha = tile.getCard().getAlpha() - 0.1f;
-                if (alpha < 0 && tile.getCard().isActive()) {
+                if (alpha <= 0 && tile.getCard().isActive()) {
                     mTiles.removeView(tile);
                 } else {
                     tile.getCard().setAlpha(alpha);
@@ -102,7 +102,7 @@ public final class TileBar {
         int result = 0;
         for (int i = 0; i < mTiles.getChildCount(); i++) {
             Tile tile = (Tile) mTiles.getChildAt(i);
-            if (tile.isEnabled()) {
+            if (tile.getCard().isEnabled()) {
                 result++;
             }
         }

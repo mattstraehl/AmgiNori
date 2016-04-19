@@ -15,6 +15,7 @@ public class Tile extends Button implements Card.CardSubscriber {
 
     private static final LightingColorFilter MATERIAL_GREY_500 = new LightingColorFilter(0xffa3a3a3, 0x000000);
     private static final LightingColorFilter MATERIAL_DEEP_ORANGE_700 = new LightingColorFilter(0xffc53929, 0x000000);
+    private static final LightingColorFilter MATERIAL_GREEN_700 = new LightingColorFilter(0xff0b8043, 0x000000);
 
     public Tile(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -27,11 +28,6 @@ public class Tile extends Button implements Card.CardSubscriber {
 
     public boolean match(Tile other) {
         return mCard.match(other.getCard());
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return mCard.isEnabled();
     }
 
     public Card getCard() {
@@ -59,7 +55,9 @@ public class Tile extends Button implements Card.CardSubscriber {
             this.setAlpha(mCard.getAlpha());
         } else if (card.isMarked()) {
             getBackground().setColorFilter(Tile.MATERIAL_GREY_500);
-        } else if (card.isDisabled()) {
+        } else if (card.isMatched()) {
+            getBackground().setColorFilter(Tile.MATERIAL_GREEN_700);
+        }else if (card.isDisabled()) {
             getBackground().setColorFilter(Tile.MATERIAL_DEEP_ORANGE_700);
         }
     }

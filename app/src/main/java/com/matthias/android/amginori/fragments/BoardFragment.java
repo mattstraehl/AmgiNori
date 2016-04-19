@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.Point;
 import android.media.AudioManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Vibrator;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -129,7 +130,7 @@ public class BoardFragment extends Fragment implements TileUpdateRunnable.GameOv
             @Override
             public void onClick(View view) {
                 Tile tile = (Tile) view;
-                if (!tile.isEnabled()) {
+                if (tile.getCard().isDisabled() || tile.getCard().isMatched()) {
                     return;
                 }
                 if (mSelected0 == null) {
@@ -304,17 +305,23 @@ public class BoardFragment extends Fragment implements TileUpdateRunnable.GameOv
     private void updateScore() {
         mMatchCount++;
         mScore = (int) (mMatchCount * mScoreIncrement);
-        if (mMatchCount % mLevel == 0) {
+        if (mMatchCount % 5 == 0) {
             mCards.addAll(CardLibrary.get(getActivity()).getRandomCards(1));
         }
         mScoreView.setText(Integer.toString(mScore));
     }
 
-    private void reinsertTile(Tile tile) {
-        ViewGroup viewGroup = (ViewGroup) tile.getParent();
-        viewGroup.removeView(tile);
-        tile.init(mCards);
-        viewGroup.addView(tile, (int) (Math.random() * viewGroup.getChildCount()));
+    private void reinsertTile(final Tile tile) {
+        tile.getCard().matched();
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                ViewGroup viewGroup = (ViewGroup) tile.getParent();
+                viewGroup.removeView(tile);
+                tile.init(mCards);
+                viewGroup.addView(tile, (int) (Math.random() * viewGroup.getChildCount()));
+            }
+        }, 170);
     }
 
     private void createGameOverDialog() {

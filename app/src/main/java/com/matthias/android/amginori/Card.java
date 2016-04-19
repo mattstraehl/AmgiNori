@@ -8,7 +8,7 @@ import java.io.Serializable;
 public final class Card implements Parcelable, Serializable {
 
     private enum CardState {
-        ACTIVE, MARKED, DISABLED
+        ACTIVE, MARKED, MATCHED, DISABLED
     }
 
     public final Long mId;
@@ -59,6 +59,13 @@ public final class Card implements Parcelable, Serializable {
         return result;
     }
 
+    public Card matched() {
+        Card result = new Card(mId, mFront, mBack, mShowFront, CardState.MATCHED, mAlpha);
+        result.mHead = mHead;
+        notifySubscriber(result);
+        return result;
+    }
+
     public Card disabled() {
         Card result = new Card(mId, mFront, mBack, mShowFront, CardState.DISABLED, mAlpha);
         result.mHead = mHead;
@@ -98,6 +105,10 @@ public final class Card implements Parcelable, Serializable {
 
     public boolean isMarked() {
         return mCardState == CardState.MARKED;
+    }
+
+    public boolean isMatched() {
+        return mCardState == CardState.MATCHED;
     }
 
     public float getAlpha() {
