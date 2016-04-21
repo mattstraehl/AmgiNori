@@ -80,10 +80,7 @@ public class BoardFragment extends Fragment implements TileUpdateRunnable.GameOv
         } catch (InterruptedException e) {
         }
 
-        if (mScore > mBestScore) {
-            mBestScore = mScore;
-        }
-
+        SharedPreferencesHelper.get(getActivity()).putInt("LatestScore" + mLevel, mScore);
         SharedPreferencesHelper.get(getActivity()).putInt("BestScore" + mLevel, mBestScore);
         SharedPreferencesHelper.get(getActivity()).putInt("MatchCount", mMatchCount);
         SharedPreferencesHelper.get(getActivity()).putInt("Level", mLevel);
@@ -104,13 +101,15 @@ public class BoardFragment extends Fragment implements TileUpdateRunnable.GameOv
         getActivity().setVolumeControlStream(AudioManager.STREAM_MUSIC);
         mAudioPlayer = new AudioPlayer(getActivity());
         mVibrator = (Vibrator) getContext().getSystemService(Context.VIBRATOR_SERVICE);
+        int latestScore = 0;
         if (SharedPreferencesHelper.get(getActivity()).getBoolean("SavedGameValid", false)) {
             mMatchCount = SharedPreferencesHelper.get(getActivity()).getInt("MatchCount", 0);
             mLevel = SharedPreferencesHelper.get(getActivity()).getInt("Level", 4500);
         } else {
             mLevel = getActivity().getIntent().getIntExtra(EXTRA_LEVEL, 4500);
+            latestScore = SharedPreferencesHelper.get(getActivity()).getInt("LatestScore" + mLevel, 0);
         }
-        mBestScore = SharedPreferencesHelper.get(getActivity()).getInt("BestScore" + mLevel, 0);
+        mBestScore = Math.max(latestScore, SharedPreferencesHelper.get(getActivity()).getInt("BestScore" + mLevel, 0));
         mScoreIncrement = Math.log(1 + CardLibrary.get(getActivity()).size());
         mScore = (int) (mMatchCount * mScoreIncrement);
     }
