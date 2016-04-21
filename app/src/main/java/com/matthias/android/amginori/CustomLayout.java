@@ -30,7 +30,9 @@ public class CustomLayout extends RelativeLayout {
     private final Paint mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     private final RenderScript mRenderScript;
     private final ScriptIntrinsicBlur mIntrinsicBlur;
-    private Bitmap mOriginal = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888);
+
+    private Bitmap mCurrent = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888);
+    private long mLastUpdate = 0l;
 
     public CustomLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -45,7 +47,10 @@ public class CustomLayout extends RelativeLayout {
     @Override
     protected void dispatchDraw(Canvas canvas) {
         super.dispatchDraw(canvas);
-        if (mPoints.isEmpty() && mView0.getHeight() > 0 && mView1.getHeight() > 0) {
+        long time = System.currentTimeMillis();
+        if (time - mLastUpdate >= 16 && mView0.getHeight() > 0 && mView1.getHeight() > 0) {
+            mLastUpdate = time;
+
             int width = Math.max(mView0.getWidth(), mView1.getWidth());
             Bitmap original = Bitmap.createBitmap(width, mView0.getHeight() + mView1.getHeight(), Bitmap.Config.ARGB_8888);
             Rect rect0 = new Rect(0, 0, width, mView0.getHeight());
@@ -71,8 +76,8 @@ public class CustomLayout extends RelativeLayout {
             BitmapDrawable drawable = new BitmapDrawable(getContext().getResources(), original);
             drawable.setAlpha(63);
             this.setBackground(drawable);
-            mOriginal.recycle();
-            mOriginal = original;
+            mCurrent.recycle();
+            mCurrent = original;
         }
         quadTo(canvas);
     }
