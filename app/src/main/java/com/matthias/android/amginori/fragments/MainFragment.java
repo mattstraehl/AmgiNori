@@ -8,6 +8,7 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
@@ -70,18 +71,21 @@ public class MainFragment extends Fragment {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        FragmentManager manager = getFragmentManager();
+        DialogFragment dialog;
         switch (item.getItemId()) {
             case R.id.menu_item_card_browser:
                 Intent intent = new Intent(getActivity(), CardListActivity.class);
                 startActivity(intent);
                 return true;
             case R.id.menu_item_clear_cards:
-                FragmentManager manager = getFragmentManager();
-                ConfirmationDialogFragment dialog = ConfirmationDialogFragment.newInstance(R.string.text_confirm_clear_cards);
+                dialog = ConfirmationDialogFragment.newInstance(R.string.text_confirm_clear_cards);
                 dialog.setTargetFragment(this, CLEAR_CARDS_CONFIRMATION_DIALOG_CODE);
                 dialog.show(manager, "dialog");
                 return true;
             case R.id.menu_item_about:
+                dialog = new AboutDialogFragment();
+                dialog.show(manager, "dialog");
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
