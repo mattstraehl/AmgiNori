@@ -70,7 +70,7 @@ public class CardListFragment extends Fragment {
                 public void onClick(View v) {
                     CardLibrary.get(getActivity()).deleteCard(mCard);
                     updateUI();
-                    mToast.setText(getResources().getString(R.string.text_card_deleted, mCard.mFront, mCard.mBack));
+                    mToast.setText(getString(R.string.text_card_deleted, mCard.mFront, mCard.mBack));
                     mToast.show();
                 }
             });

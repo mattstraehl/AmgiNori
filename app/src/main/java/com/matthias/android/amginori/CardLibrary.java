@@ -59,6 +59,7 @@ public final class CardLibrary {
             result.add(card);
             result.add(card.reversedCopy());
         }
+        Collections.shuffle(result);
         return result;
     }
 

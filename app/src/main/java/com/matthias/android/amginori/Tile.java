@@ -57,7 +57,7 @@ public class Tile extends Button implements Card.CardSubscriber {
             getBackground().setColorFilter(Tile.MATERIAL_GREY_500);
         } else if (card.isMatched()) {
             getBackground().setColorFilter(Tile.MATERIAL_GREEN_700);
-        }else if (card.isDisabled()) {
+        } else if (card.isDisabled()) {
             getBackground().setColorFilter(Tile.MATERIAL_DEEP_ORANGE_700);
         }
     }
