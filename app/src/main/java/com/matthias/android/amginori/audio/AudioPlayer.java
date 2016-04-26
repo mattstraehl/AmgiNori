@@ -1,4 +1,4 @@
-package com.matthias.android.amginori;
+package com.matthias.android.amginori.audio;
 
 import android.content.Context;
 import android.content.res.AssetFileDescriptor;

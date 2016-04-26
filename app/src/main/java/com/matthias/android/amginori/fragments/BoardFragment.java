@@ -21,7 +21,7 @@ import android.view.ViewGroup;
 import android.widget.HorizontalScrollView;
 import android.widget.TextView;
 
-import com.matthias.android.amginori.AudioPlayer;
+import com.matthias.android.amginori.audio.AudioPlayer;
 import com.matthias.android.amginori.Level;
 import com.matthias.android.amginori.activities.BoardActivity;
 import com.matthias.android.amginori.Card;
