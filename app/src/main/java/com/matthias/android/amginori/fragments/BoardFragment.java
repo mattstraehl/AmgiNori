@@ -22,6 +22,7 @@ import android.widget.HorizontalScrollView;
 import android.widget.TextView;
 
 import com.matthias.android.amginori.AudioPlayer;
+import com.matthias.android.amginori.Level;
 import com.matthias.android.amginori.activities.BoardActivity;
 import com.matthias.android.amginori.Card;
 import com.matthias.android.amginori.CardLibrary;
@@ -48,7 +49,7 @@ public class BoardFragment extends Fragment implements TileUpdateRunnable.GameOv
     private int mScore;
     private int mBestScore;
     private double mScoreIncrement;
-    private int mLevel;
+    private Level mLevel;
 
     private Tile mSelected0;
     private Tile mSelected1;
@@ -83,7 +84,7 @@ public class BoardFragment extends Fragment implements TileUpdateRunnable.GameOv
         SharedPreferencesHelper.get(getActivity()).putInt("LatestScore" + mLevel, mScore);
         SharedPreferencesHelper.get(getActivity()).putInt("BestScore" + mLevel, mBestScore);
         SharedPreferencesHelper.get(getActivity()).putInt("MatchCount", mMatchCount);
-        SharedPreferencesHelper.get(getActivity()).putInt("Level", mLevel);
+        SharedPreferencesHelper.get(getActivity()).putInt("Level", mLevel.ordinal());
 
         SharedPreferencesHelper.get(getActivity()).putString("Cards", Base64.encodeObject(mCards));
         SharedPreferencesHelper.get(getActivity()).putString("TileBar0", Base64.encodeObject(mTileBar0.getCards()));
@@ -104,9 +105,9 @@ public class BoardFragment extends Fragment implements TileUpdateRunnable.GameOv
         int latestScore = 0;
         if (SharedPreferencesHelper.get(getActivity()).getBoolean("SavedGameValid", false)) {
             mMatchCount = SharedPreferencesHelper.get(getActivity()).getInt("MatchCount", 0);
-            mLevel = SharedPreferencesHelper.get(getActivity()).getInt("Level", 4500);
+            mLevel = Level.values()[SharedPreferencesHelper.get(getActivity()).getInt("Level", 0)];
         } else {
-            mLevel = getActivity().getIntent().getIntExtra(EXTRA_LEVEL, 4500);
+            mLevel = Level.values()[getActivity().getIntent().getIntExtra(EXTRA_LEVEL, 0)];
             latestScore = SharedPreferencesHelper.get(getActivity()).getInt("LatestScore" + mLevel, 0);
         }
         mBestScore = Math.max(latestScore, SharedPreferencesHelper.get(getActivity()).getInt("BestScore" + mLevel, 0));
@@ -198,10 +199,13 @@ public class BoardFragment extends Fragment implements TileUpdateRunnable.GameOv
         mScoreView = (TextView) view.findViewById(R.id.current_score);
         mBestScoreView = (TextView) view.findViewById(R.id.best_score);
 
+        AppCompatActivity activity = (AppCompatActivity) getActivity();
+        String level = getString(mLevel.textId);
         String collectionName = SharedPreferencesHelper.get(getActivity()).getString("CollectionName", null);
         if (collectionName != null) {
-            AppCompatActivity activity = (AppCompatActivity) getActivity();
-            activity.getSupportActionBar().setSubtitle(collectionName);
+            activity.getSupportActionBar().setSubtitle(level + " - " +collectionName);
+        } else {
+            activity.getSupportActionBar().setSubtitle(level);
         }
 
         mLayout.mView0 = scrollView0;
@@ -294,7 +298,7 @@ public class BoardFragment extends Fragment implements TileUpdateRunnable.GameOv
     private void updateScore() {
         mMatchCount++;
         mScore = (int) (mMatchCount * mScoreIncrement);
-        if (mMatchCount % 5 == 0) {
+        if (mMatchCount % mLevel.matchCountPerNewCard == 0) {
             mCards.addAll(CardLibrary.get(getActivity()).getRandomCards(1));
         }
         mScoreView.setText(Integer.toString(mScore));
@@ -322,7 +326,7 @@ public class BoardFragment extends Fragment implements TileUpdateRunnable.GameOv
     }
 
     private void init() {
-        mCards = CardLibrary.get(getActivity()).getRandomCards(2);
+        mCards = CardLibrary.get(getActivity()).getRandomCards(mLevel.initialCardCount);
         CardLibrary.get(getActivity()).reset();
         mTileBar0.init(mCards);
         mTileBar1.init(mCards);
@@ -347,7 +351,7 @@ public class BoardFragment extends Fragment implements TileUpdateRunnable.GameOv
     }
 
     private void startUpdateThread() {
-        mUpdateThread = new Thread(new TileUpdateRunnable(mTileBar0, mTileBar1, mLevel, this));
+        mUpdateThread = new Thread(new TileUpdateRunnable(mTileBar0, mTileBar1, mLevel.millisPerUpdate, this));
         mUpdateThread.start();
     }
 
@@ -367,9 +371,9 @@ public class BoardFragment extends Fragment implements TileUpdateRunnable.GameOv
         }
     }
 
-    public static Intent newIntent(Context packageContext, int level) {
+    public static Intent newIntent(Context packageContext, Level level) {
         Intent intent = new Intent(packageContext, BoardActivity.class);
-        intent.putExtra(EXTRA_LEVEL, level);
+        intent.putExtra(EXTRA_LEVEL, level.ordinal());
         return intent;
     }
 }

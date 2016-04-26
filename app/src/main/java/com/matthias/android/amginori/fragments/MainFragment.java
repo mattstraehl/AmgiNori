@@ -26,6 +26,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.matthias.android.amginori.CardLibrary;
+import com.matthias.android.amginori.Level;
 import com.matthias.android.amginori.activities.CardListActivity;
 import com.matthias.android.amginori.R;
 import com.matthias.android.amginori.persistence.Anki2DbHelper;
@@ -40,7 +41,7 @@ public class MainFragment extends Fragment {
     private static final int REQUEST_READ_EXTERNAL_STORAGE_CODE = 1;
     private static final int CLEAR_CARDS_CONFIRMATION_DIALOG_CODE = 2;
 
-    private int mLevel = 4500;
+    private Level mLevel = Level.EASY;
 
     private Button mResumeButton;
     private EditText mFront;
@@ -124,11 +125,11 @@ public class MainFragment extends Fragment {
                 switch (v.getId()) {
                     case R.id.option_easy:
                         if (checked)
-                            mLevel = 4500;
+                            mLevel = Level.EASY;
                         break;
                     case R.id.option_hard:
                         if (checked)
-                            mLevel = 3000;
+                            mLevel = Level.HARD;
                         break;
                 }
             }
