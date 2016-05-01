@@ -21,7 +21,7 @@ public class AboutDialogFragment extends DialogFragment {
         } catch (PackageManager.NameNotFoundException e) {
         }
         return new AlertDialog.Builder(getActivity())
-                .setTitle(getResources().getString(R.string.version_name, versionName))
+                .setTitle(getString(R.string.version_name, versionName))
                 .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                     }

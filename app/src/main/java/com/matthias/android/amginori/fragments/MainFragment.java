@@ -157,7 +157,7 @@ public class MainFragment extends Fragment {
                     mFront.requestFocus();
                     mFront.getText().clear();
                     mBack.getText().clear();
-                    Toast.makeText(getActivity(), R.string.text_one_card_added, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), R.string.text_card_added, Toast.LENGTH_SHORT).show();
                 }
             }
         });

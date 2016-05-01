@@ -69,7 +69,7 @@
         android:paddingEnd="150dp"
         android:paddingRight="150dp"
         android:paddingTop="30dp"
-        android:text="@string/best"
+        android:text="@string/highest"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <TextView

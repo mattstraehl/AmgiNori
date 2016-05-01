@@ -22,15 +22,15 @@
     <string name="text_install_file_manager">Please install a File Manager.</string>
     <string name="text_invalid_anki_package">Selected file is not a valid Anki Package.</string>
     <string name="text_loading">Loading…</string>
-    <string name="text_one_card_added">1 card added.</string>
+    <string name="text_card_added">1 card added.</string>
 
     <string name="answer">Answer</string>
     <string name="available">available</string>
     <string name="back">Back</string>
-    <string name="best">Best</string>
     <string name="cancel">Cancel</string>
     <string name="cannot_be_blank">Cannot be blank</string>
     <string name="front">Front</string>
+    <string name="highest">Highest</string>
     <string name="import_cards">Import Cards</string>
     <string name="new_card">New Card</string>
     <string name="new_game">New Game</string>

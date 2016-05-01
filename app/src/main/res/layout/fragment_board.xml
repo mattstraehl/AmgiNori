@@ -69,7 +69,7 @@
         android:paddingEnd="25dp"
         android:paddingRight="25dp"
         android:paddingTop="10dp"
-        android:text="@string/best" />
+        android:text="@string/highest" />
 
     <TextView
         android:id="@+id/slash_label"
