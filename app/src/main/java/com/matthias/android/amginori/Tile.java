@@ -13,9 +13,10 @@ public class Tile extends Button implements Card.CardSubscriber {
 
     private Card.CardSubscriber mNext;
 
+    private static final LightingColorFilter MATERIAL_GREY_900 = new LightingColorFilter(0xff212121, 0x000000);
     private static final LightingColorFilter MATERIAL_GREY_500 = new LightingColorFilter(0xffa3a3a3, 0x000000);
     private static final LightingColorFilter MATERIAL_DEEP_ORANGE_700 = new LightingColorFilter(0xffc53929, 0x000000);
-    private static final LightingColorFilter MATERIAL_GREEN_700 = new LightingColorFilter(0xff0b8043, 0x000000);
+    private static final LightingColorFilter AMGI_NORI_GREEN = new LightingColorFilter(0xff6cbf00, 0x000000);
 
     public Tile(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -40,7 +41,7 @@ public class Tile extends Button implements Card.CardSubscriber {
         if (mCard.isDisabled()) {
             this.getBackground().setColorFilter(MATERIAL_DEEP_ORANGE_700);
         } else {
-            this.getBackground().setColorFilter(null);
+            this.getBackground().setColorFilter(MATERIAL_GREY_900);
             this.setAlpha(mCard.getAlpha());
         }
         mCard.addSubscriber(this);
@@ -51,14 +52,14 @@ public class Tile extends Button implements Card.CardSubscriber {
         mCard = card;
         resetAlpha();
         if (card.isActive()) {
-            getBackground().setColorFilter(null);
+            this.getBackground().setColorFilter(MATERIAL_GREY_900);
             this.setAlpha(mCard.getAlpha());
         } else if (card.isMarked()) {
-            getBackground().setColorFilter(Tile.MATERIAL_GREY_500);
+            this.getBackground().setColorFilter(MATERIAL_GREY_500);
         } else if (card.isMatched()) {
-            getBackground().setColorFilter(Tile.MATERIAL_GREEN_700);
+            this.getBackground().setColorFilter(AMGI_NORI_GREEN);
         } else if (card.isDisabled()) {
-            getBackground().setColorFilter(Tile.MATERIAL_DEEP_ORANGE_700);
+            this.getBackground().setColorFilter(MATERIAL_DEEP_ORANGE_700);
         }
     }
 

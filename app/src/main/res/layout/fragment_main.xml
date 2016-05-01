@@ -60,7 +60,7 @@
         android:layout_height="1dp"
         android:layout_below="@id/start_button"
         android:layout_marginTop="15dp"
-        android:background="@color/colorPrimaryDark" />
+        android:background="@color/colorPrimary" />
 
     <TextView
         android:id="@+id/new_card"
@@ -112,7 +112,7 @@
         android:layout_height="1dp"
         android:layout_below="@id/add_button"
         android:layout_marginTop="15dp"
-        android:background="@color/colorPrimaryDark" />
+        android:background="@color/colorPrimary" />
 
     <TextView
         android:id="@+id/import_cards"

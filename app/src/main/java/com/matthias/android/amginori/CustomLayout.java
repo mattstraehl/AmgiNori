@@ -4,9 +4,12 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.ColorFilter;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Point;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.support.v8.renderscript.Allocation;
@@ -33,6 +36,8 @@ public class CustomLayout extends RelativeLayout {
 
     private Bitmap mCurrent = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888);
     private long mLastUpdate = 0l;
+
+    private static final ColorFilter BRIGHTNESS_FILTER = new PorterDuffColorFilter(Color.argb(31, 255, 255, 255), PorterDuff.Mode.SRC_OVER);
 
     public CustomLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -75,6 +80,7 @@ public class CustomLayout extends RelativeLayout {
 
             BitmapDrawable drawable = new BitmapDrawable(getContext().getResources(), original);
             drawable.setAlpha(63);
+            drawable.setColorFilter(BRIGHTNESS_FILTER);
             this.setBackground(drawable);
             mCurrent.recycle();
             mCurrent = original;
