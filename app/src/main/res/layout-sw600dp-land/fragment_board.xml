@@ -26,6 +26,8 @@
 
             <include layout="@layout/tile" />
 
+            <include layout="@layout/tile" />
+
         </LinearLayout>
 
     </HorizontalScrollView>
@@ -51,29 +53,6 @@
 
             <include layout="@layout/tile" />
 
-        </LinearLayout>
-
-    </HorizontalScrollView>
-
-    <HorizontalScrollView
-        android:id="@+id/scroll_view_2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/scroll_view_1"
-        android:layout_centerHorizontal="true"
-        android:layout_margin="1dp"
-        android:fadeScrollbars="false"
-        android:scrollbars="none">
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:animateLayoutChanges="true"
-            android:gravity="center"
-            android:orientation="horizontal">
-
-            <include layout="@layout/tile" />
-
             <include layout="@layout/tile" />
 
         </LinearLayout>
@@ -86,10 +65,10 @@
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
-        android:layout_below="@id/scroll_view_2"
-        android:paddingEnd="120dp"
-        android:paddingRight="120dp"
-        android:paddingTop="60dp"
+        android:layout_below="@id/scroll_view_1"
+        android:paddingEnd="150dp"
+        android:paddingRight="150dp"
+        android:paddingTop="30dp"
         android:text="@string/highest"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
@@ -97,12 +76,12 @@
         android:id="@+id/slash_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/scroll_view_2"
+        android:layout_below="@id/scroll_view_1"
         android:layout_toLeftOf="@id/best_label"
         android:layout_toStartOf="@id/best_label"
         android:paddingEnd="10dp"
         android:paddingRight="10dp"
-        android:paddingTop="60dp"
+        android:paddingTop="30dp"
         android:text="|"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
@@ -110,12 +89,12 @@
         android:id="@+id/score_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/scroll_view_2"
+        android:layout_below="@id/scroll_view_1"
         android:layout_toLeftOf="@id/slash_label"
         android:layout_toStartOf="@id/slash_label"
         android:paddingEnd="10dp"
         android:paddingRight="10dp"
-        android:paddingTop="60dp"
+        android:paddingTop="30dp"
         android:text="@string/score"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
@@ -126,8 +105,8 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_below="@id/best_label"
-        android:paddingEnd="120dp"
-        android:paddingRight="120dp"
+        android:paddingEnd="150dp"
+        android:paddingRight="150dp"
         android:paddingTop="5dp"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 

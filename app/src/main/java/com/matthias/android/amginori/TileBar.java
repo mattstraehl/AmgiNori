@@ -16,6 +16,7 @@ public final class TileBar {
     private final HorizontalScrollView mScrollView;
     private final ViewGroup mTiles;
     private final View.OnClickListener mTileClickListener;
+    private final int mInitialCount;
 
     private List<Card> mCards;
     private int mInset;
@@ -26,12 +27,13 @@ public final class TileBar {
         mTiles = (ViewGroup) mScrollView.getChildAt(0);
         mTileClickListener = tileClickListener;
         mInset = context.getResources().getDimensionPixelSize(R.dimen.inset);
+        mInitialCount = mTiles.getChildCount();
     }
 
     public void init(List<Card> cards) {
         mCards = cards;
         mTiles.removeAllViews();
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < mInitialCount; i++) {
             Tile tile = initTile();
             tile.init(cards);
             mTiles.addView(tile);
@@ -51,25 +53,6 @@ public final class TileBar {
             }
         }
         return null;
-    }
-
-    public ArrayList<Card> getCards() {
-        ArrayList<Card> result = new ArrayList<>();
-        for (int i = 0; i < mTiles.getChildCount(); i++) {
-            Tile tile = (Tile) mTiles.getChildAt(i);
-            result.add(tile.getCard());
-        }
-        return result;
-    }
-
-    public void setCards(ArrayList<Card> restored, List<Card> cards) {
-        mCards = cards;
-        mTiles.removeAllViews();
-        for (int i = 0; i < restored.size(); i++) {
-            Tile tile = initTile();
-            tile.setCard(restored.get(i));
-            mTiles.addView(tile);
-        }
     }
 
     public void updateTiles() {
@@ -92,7 +75,7 @@ public final class TileBar {
         mTiles.addView(tile, (int) (Math.random() * mTiles.getChildCount()));
     }
 
-    private Tile initTile() {
+    public Tile initTile() {
         Tile tile = (Tile) LayoutInflater.from(mContext).inflate(R.layout.tile, mTiles, false);
         tile.setOnClickListener(mTileClickListener);
         return tile;
@@ -109,8 +92,47 @@ public final class TileBar {
         return result;
     }
 
-    public static boolean isGameOver(TileBar tileBar0, TileBar tileBar1) {
-        return tileBar0.enabledTileCount() == 0 && tileBar1.enabledTileCount() == 0;
+    public static ArrayList<Card> getCards(List<TileBar> tileBars) {
+        ArrayList<Card> result = new ArrayList<>();
+        for (TileBar tileBar : tileBars) {
+            for (int i = 0; i < tileBar.mTiles.getChildCount(); i++) {
+                Tile tile = (Tile) tileBar.mTiles.getChildAt(i);
+                result.add(tile.getCard());
+            }
+        }
+        return result;
+    }
+
+    public static void setCards(List<TileBar> tileBars, List<Card> restored, List<Card> cards) {
+        int partitionSize = restored.size() / tileBars.size() + Math.min(restored.size() % tileBars.size(), 1);
+        int i = 0;
+        for (TileBar tileBar : tileBars) {
+            tileBar.mCards = cards;
+            tileBar.mTiles.removeAllViews();
+            for (Card card : restored.subList(Math.min(i, restored.size()), Math.min(i += partitionSize, restored.size()))) {
+                Tile tile = tileBar.initTile();
+                tile.setCard(card);
+                tileBar.mTiles.addView(tile);
+            }
+        }
+    }
+
+    public static TileBar getShortest(List<TileBar> tileBars) {
+        TileBar result = tileBars.get((int) (tileBars.size() * Math.random()));
+        for (TileBar tileBar : tileBars) {
+            if (tileBar.mTiles.getChildCount() < result.mTiles.getChildCount()) {
+                result = tileBar;
+            }
+        }
+        return result;
+    }
+
+    public static boolean isGameOver(List<TileBar> tileBars) {
+        int enabledTileCount = 0;
+        for (TileBar tileBar : tileBars) {
+            enabledTileCount += tileBar.enabledTileCount();
+        }
+        return enabledTileCount == 0;
     }
 
     public HorizontalScrollView getScrollView() {

@@ -1,54 +1,57 @@
 package com.matthias.android.amginori;
 
+import java.util.List;
+
 public final class TileUpdateRunnable implements Runnable {
 
-    private final TileBar mTileBar0;
-    private final TileBar mTileBar1;
+    private final List<TileBar> mTileBars;
     private final long mMillisPerUpdate;
     private final GameOverCallback mCallback;
 
     private long mCount = 0l;
 
-    public TileUpdateRunnable(TileBar tileBar0, TileBar tileBar1, long millisPerUpdate, GameOverCallback callback) {
-        mTileBar0 = tileBar0;
-        mTileBar1 = tileBar1;
+    public TileUpdateRunnable(List<TileBar> tileBars, long millisPerUpdate, GameOverCallback callback) {
+        mTileBars = tileBars;
         mMillisPerUpdate = millisPerUpdate;
         mCallback = callback;
     }
 
     @Override
     public void run() {
+        long start;
         while (!Thread.currentThread().isInterrupted()) {
+            start = System.currentTimeMillis();
             mCount++;
             if (mCount % 11 == 0) {
-                addTile(mTileBar0, mTileBar1);
+                addTile(mTileBars);
             }
-            updateTiles(mTileBar0, mTileBar1);
+            updateTiles(mTileBars);
             try {
-                Thread.sleep(mMillisPerUpdate);
+                Thread.sleep(start + mMillisPerUpdate - System.currentTimeMillis());
             } catch (InterruptedException e) {
                 break;
             }
         }
     }
 
-    private void addTile(final TileBar tileBar0, final TileBar tileBar1) {
-        tileBar0.getTiles().post(new Runnable() {
+    private void addTile(final List<TileBar> tileBars) {
+        tileBars.get(0).getTiles().post(new Runnable() {
             @Override
             public void run() {
-                tileBar0.addTile();
-                tileBar1.addTile();
+                TileBar.getShortest(mTileBars).addTile();
+                TileBar.getShortest(mTileBars).addTile();
             }
         });
     }
 
-    private void updateTiles(final TileBar tileBar0, final TileBar tileBar1) {
-        tileBar0.getTiles().post(new Runnable() {
+    private void updateTiles(final List<TileBar> tileBars) {
+        tileBars.get(0).getTiles().post(new Runnable() {
             @Override
             public void run() {
-                tileBar0.updateTiles();
-                tileBar1.updateTiles();
-                if (TileBar.isGameOver(tileBar0, tileBar1)) {
+                for (TileBar tileBar : tileBars) {
+                    tileBar.updateTiles();
+                }
+                if (TileBar.isGameOver(tileBars)) {
                     mCallback.gameOverCallback();
                 }
             }

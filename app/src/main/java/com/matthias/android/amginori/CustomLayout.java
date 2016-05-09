@@ -22,13 +22,13 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 public class CustomLayout extends RelativeLayout {
 
+    public final List<View> mViews = new ArrayList<>();
     public final List<Point> mPoints = new ArrayList<>();
-    public View mView0;
-    public View mView1;
 
     private final Paint mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     private final RenderScript mRenderScript;
@@ -53,39 +53,54 @@ public class CustomLayout extends RelativeLayout {
     protected void dispatchDraw(Canvas canvas) {
         super.dispatchDraw(canvas);
         long time = System.currentTimeMillis();
-        if (time - mLastUpdate >= 16 && mView0.getHeight() > 0 && mView1.getHeight() > 0) {
+        if (time - mLastUpdate >= 16) {
             mLastUpdate = time;
+            Bitmap original = createBitmapOfViews();
+            if (original != null) {
+                Allocation input = Allocation.createFromBitmap(mRenderScript, original);
+                Allocation output = Allocation.createTyped(mRenderScript, input.getType());
+                mIntrinsicBlur.setRadius(25f);
+                mIntrinsicBlur.setInput(input);
+                mIntrinsicBlur.forEach(output);
+                output.copyTo(original);
+                input.destroy();
+                output.destroy();
 
-            int width = Math.max(mView0.getWidth(), mView1.getWidth());
-            Bitmap original = Bitmap.createBitmap(width, mView0.getHeight() + mView1.getHeight(), Bitmap.Config.ARGB_8888);
-            Rect rect0 = new Rect(0, 0, width, mView0.getHeight());
-            Rect rect1 = new Rect(0, mView0.getHeight(), width, mView0.getHeight() + mView1.getHeight());
-
-            Canvas c = new Canvas(original);
-            Bitmap bitmap = loadBitmapFromView(mView0);
-            c.drawBitmap(bitmap, null, rect0, null);
-            bitmap.recycle();
-            bitmap = loadBitmapFromView(mView1);
-            c.drawBitmap(bitmap, null, rect1, null);
-            bitmap.recycle();
-
-            Allocation input = Allocation.createFromBitmap(mRenderScript, original);
-            Allocation output = Allocation.createTyped(mRenderScript, input.getType());
-            mIntrinsicBlur.setRadius(25f);
-            mIntrinsicBlur.setInput(input);
-            mIntrinsicBlur.forEach(output);
-            output.copyTo(original);
-            input.destroy();
-            output.destroy();
-
-            BitmapDrawable drawable = new BitmapDrawable(getContext().getResources(), original);
-            drawable.setAlpha(63);
-            drawable.setColorFilter(BRIGHTNESS_FILTER);
-            this.setBackground(drawable);
-            mCurrent.recycle();
-            mCurrent = original;
+                BitmapDrawable drawable = new BitmapDrawable(getContext().getResources(), original);
+                drawable.setAlpha(63);
+                drawable.setColorFilter(BRIGHTNESS_FILTER);
+                this.setBackground(drawable);
+                mCurrent.recycle();
+                mCurrent = original;
+            }
         }
         quadTo(canvas);
+    }
+
+    private Bitmap createBitmapOfViews() {
+        LinkedList<View> views = new LinkedList<>();
+        int width = 0;
+        for (View view : mViews) {
+            if (view.getHeight() > 0) {
+                views.add(view);
+                width = Math.max(width, view.getWidth());
+            }
+        }
+        if (views.isEmpty()) {
+            return null;
+        }
+        int height = views.getFirst().getHeight();
+        Bitmap result = Bitmap.createBitmap(width, height * views.size(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(result);
+        int i = 0;
+        for (View view : views) {
+            Rect rect = new Rect(0, height * i, width, height * (i + 1));
+            Bitmap bitmap = loadBitmapFromView(view);
+            canvas.drawBitmap(bitmap, null, rect, null);
+            bitmap.recycle();
+            i++;
+        }
+        return result;
     }
 
     private void quadTo(Canvas canvas) {
@@ -127,7 +142,7 @@ public class CustomLayout extends RelativeLayout {
         return false;
     }*/
 
-    private static Bitmap loadBitmapFromView(View view) {
+    protected static Bitmap loadBitmapFromView(View view) {
         View v = ((ViewGroup) view).getChildAt(0);
         Bitmap bitmap = Bitmap.createBitmap(v.getWidth(), v.getHeight(), Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(bitmap);

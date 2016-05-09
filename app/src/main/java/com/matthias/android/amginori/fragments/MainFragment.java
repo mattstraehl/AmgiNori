@@ -27,8 +27,8 @@ import android.widget.Toast;
 
 import com.matthias.android.amginori.CardLibrary;
 import com.matthias.android.amginori.Level;
-import com.matthias.android.amginori.activities.CardListActivity;
 import com.matthias.android.amginori.R;
+import com.matthias.android.amginori.activities.CardListActivity;
 import com.matthias.android.amginori.persistence.Anki2DbHelper;
 import com.matthias.android.amginori.persistence.AnkiPackageImporter;
 import com.matthias.android.amginori.persistence.SharedPreferencesHelper;
@@ -116,8 +116,8 @@ public class MainFragment extends Fragment {
             }
         });
 
-        RadioButton optionEasy = (RadioButton) view.findViewById(R.id.option_easy);
-        RadioButton optionHard = (RadioButton) view.findViewById(R.id.option_hard);
+        final RadioButton optionEasy = (RadioButton) view.findViewById(R.id.option_easy);
+        final RadioButton optionHard = (RadioButton) view.findViewById(R.id.option_hard);
         View.OnClickListener listener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -136,6 +136,12 @@ public class MainFragment extends Fragment {
         };
         optionEasy.setOnClickListener(listener);
         optionHard.setOnClickListener(listener);
+        view.post(new Runnable() {
+            @Override
+            public void run() {
+                mLevel = optionHard.isChecked() ? Level.HARD : Level.EASY;
+            }
+        });
 
         Button addButton = (Button) view.findViewById(R.id.add_button);
         addButton.setOnClickListener(new View.OnClickListener() {

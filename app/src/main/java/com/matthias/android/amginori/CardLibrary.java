@@ -13,7 +13,7 @@ import java.util.List;
 
 public final class CardLibrary {
 
-    private static final int CARD_POOL_SIZE = 6;
+    private static final int CARD_POOL_SIZE = 8;
 
     private static CardLibrary sCardLibrary;
 

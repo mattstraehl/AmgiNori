@@ -1,20 +1,20 @@
 package com.matthias.android.amginori.persistence;
 
-import java.io.File;
-import java.util.LinkedList;
-import java.util.List;
-
-import com.matthias.android.amginori.Card;
-import com.matthias.android.amginori.CardLibrary;
-import com.matthias.android.amginori.persistence.Anki2DbSchema.AmgiNoriCardsTable;
-import com.matthias.android.amginori.persistence.Anki2DbSchema.NotesTable;
-
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.text.Html;
+
+import com.matthias.android.amginori.Card;
+import com.matthias.android.amginori.CardLibrary;
+import com.matthias.android.amginori.persistence.Anki2DbSchema.AmgiNoriCardsTable;
+import com.matthias.android.amginori.persistence.Anki2DbSchema.NotesTable;
+
+import java.io.File;
+import java.util.LinkedList;
+import java.util.List;
 
 public final class Anki2DbHelper extends SQLiteOpenHelper {
 
