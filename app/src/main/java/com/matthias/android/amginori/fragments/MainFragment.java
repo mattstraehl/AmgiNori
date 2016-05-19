@@ -5,9 +5,11 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.provider.OpenableColumns;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -267,7 +269,16 @@ public class MainFragment extends Fragment {
         }
 
         private void persistCollectionName(Uri uri) {
-            String collectionName = new File(uri.getPath()).getName();
+            String collectionName;
+            if ("content".equals(uri.getScheme())) {
+                Cursor cursor = getActivity().getContentResolver().query(uri, null, null, null, null);
+                int nameIndex = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
+                cursor.moveToFirst();
+                collectionName = cursor.getString(nameIndex);
+                cursor.close();
+            } else {
+                collectionName = new File(uri.getPath()).getName();
+            }
             int pos = collectionName.lastIndexOf(".");
             if (pos > 0) {
                 collectionName = collectionName.substring(0, pos);

@@ -3,13 +3,11 @@ package com.matthias.android.amginori.persistence;
 import android.content.Context;
 import android.net.Uri;
 
-import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
+import java.util.zip.ZipInputStream;
 
 public final class AnkiPackageImporter {
 
@@ -20,15 +18,20 @@ public final class AnkiPackageImporter {
     public static int importAnkiPackage(Context context, String dbName, Uri file) {
         Anki2DbHelper database = new Anki2DbHelper(context);
         database.getReadableDatabase();
-        ZipFile zipFile = null;
+        ZipInputStream in = null;
         OutputStream out = null;
         try {
-            zipFile = new ZipFile(new File(file.getPath()), ZipFile.OPEN_READ);
-            ZipEntry ze = zipFile.getEntry(ZIP_FILE_ENTRY);
+            in = new ZipInputStream(context.getContentResolver().openInputStream(file));
+            ZipEntry ze = null;
+            for (ZipEntry e; (e = in.getNextEntry()) != null;) {
+                if (ZIP_FILE_ENTRY.equals(e.getName())) {
+                    ze = e;
+                    break;
+                }
+            }
             if (ze == null || ze.isDirectory()) {
                 return -1;
             }
-            InputStream in = zipFile.getInputStream(ze);
             out = new FileOutputStream(context.getDatabasePath(dbName).getAbsolutePath());
             byte[] buffer = new byte[FILE_COPY_BUFFER_SIZE];
             int n;
@@ -45,9 +48,9 @@ public final class AnkiPackageImporter {
                 } catch (IOException e) {
                 }
             }
-            if (zipFile != null) {
+            if (in != null) {
                 try {
-                    zipFile.close();
+                    in.close();
                 } catch (IOException e) {
                 }
             }
