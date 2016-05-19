@@ -21,6 +21,9 @@ public final class Anki2DbHelper extends SQLiteOpenHelper {
     public static final String DATABASE_NAME = "CardCollection";
     private static final int VERSION = 1;
 
+    private static final String IMAGE_PATH_REGEX = "<img.*src=[\"'](.*)[\"'].*/?>";
+    private static final String SOUND_PATH_REGEX = "\\[sound:(.*)\\]";
+
     private final String DATABASE_PATH;
     private final Context mContext;
 
@@ -128,7 +131,9 @@ public final class Anki2DbHelper extends SQLiteOpenHelper {
             do {
                 String card = cursor.getString(0);
                 String[] fields = card.split(NotesTable.FIELD_SEPARATOR, -1);
-                insertCard(database, Html.fromHtml(fields[0]).toString(), Html.fromHtml(fields[1]).toString());
+                String front = fields[0].replaceAll(IMAGE_PATH_REGEX, "").replaceAll(SOUND_PATH_REGEX, "");
+                String back = fields[1].replaceAll(IMAGE_PATH_REGEX, "").replaceAll(SOUND_PATH_REGEX, "");
+                insertCard(database, Html.fromHtml(front).toString(), Html.fromHtml(back).toString());
             } while (cursor.moveToNext());
         }
         cursor.close();
