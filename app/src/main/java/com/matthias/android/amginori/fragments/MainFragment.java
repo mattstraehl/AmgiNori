@@ -3,6 +3,7 @@ package com.matthias.android.amginori.fragments;
 import android.Manifest;
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -52,11 +53,13 @@ public class MainFragment extends Fragment {
 
     private Uri mUri;
 
-    ProgressDialog mProgress;
+    private ProgressDialog mProgressDialog;
+    private boolean mIsImportTaskRunning = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        this.setRetainInstance(true);
         this.setHasOptionsMenu(true);
     }
 
@@ -187,10 +190,13 @@ public class MainFragment extends Fragment {
         mBack = (EditText) view.findViewById(R.id.back_text);
         mHelpText = (TextView) view.findViewById(R.id.help_text);
 
-        mProgress = new ProgressDialog(view.getContext());
-        mProgress.setCancelable(false);
-        mProgress.setMessage(getString(R.string.text_loading));
-        mProgress.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        mProgressDialog = new ProgressDialog(view.getContext());
+        mProgressDialog.setCancelable(false);
+        mProgressDialog.setMessage(getString(R.string.text_loading));
+        mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        if (mIsImportTaskRunning) {
+            mProgressDialog.show();
+        }
 
         return view;
     }
@@ -202,7 +208,8 @@ public class MainFragment extends Fragment {
         }
         if (requestCode == FILE_SELECT_CODE) {
             mUri = data.getData();
-            mProgress.show();
+            mIsImportTaskRunning = true;
+            mProgressDialog.show();
             new ImportTask().execute(mUri);
         } else if (requestCode == CLEAR_CARDS_CONFIRMATION_DIALOG_CODE) {
             SharedPreferencesHelper.get(getActivity()).remove("CollectionName");
@@ -219,6 +226,14 @@ public class MainFragment extends Fragment {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 displayFileChooser();
             }
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        if (mProgressDialog != null && mProgressDialog.isShowing()) {
+            mProgressDialog.dismiss();
         }
     }
 
@@ -265,7 +280,10 @@ public class MainFragment extends Fragment {
             } else {
                 Toast.makeText(getActivity(), R.string.text_invalid_anki_package, Toast.LENGTH_LONG).show();
             }
-            mProgress.dismiss();
+            if (mProgressDialog != null) {
+                mProgressDialog.dismiss();
+            }
+            mIsImportTaskRunning = false;
         }
 
         private void persistCollectionName(Uri uri) {

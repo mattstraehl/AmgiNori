@@ -126,14 +126,20 @@ public final class Anki2DbHelper extends SQLiteOpenHelper {
         Cursor cursor = database.rawQuery("SELECT " + NotesTable.Cols.FLDS
                 + " FROM " + NotesTable.NAME, null);
 
-        int count = cursor.getCount();
+        int count = 0;
         if (cursor.moveToFirst()) {
             do {
                 String card = cursor.getString(0);
                 String[] fields = card.split(NotesTable.FIELD_SEPARATOR, -1);
+                // Strip all formatting and media path information
                 String front = fields[0].replaceAll(IMAGE_PATH_REGEX, "").replaceAll(SOUND_PATH_REGEX, "");
                 String back = fields[1].replaceAll(IMAGE_PATH_REGEX, "").replaceAll(SOUND_PATH_REGEX, "");
-                insertCard(database, Html.fromHtml(front).toString(), Html.fromHtml(back).toString());
+                front = Html.fromHtml(front).toString();
+                back = Html.fromHtml(back).toString();
+                if (!front.isEmpty() && !back.isEmpty()) {
+                    insertCard(database, front, back);
+                    count++;
+                }
             } while (cursor.moveToNext());
         }
         cursor.close();
