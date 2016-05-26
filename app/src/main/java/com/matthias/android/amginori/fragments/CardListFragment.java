@@ -15,6 +15,7 @@ import android.widget.Toast;
 import com.matthias.android.amginori.Card;
 import com.matthias.android.amginori.CardLibrary;
 import com.matthias.android.amginori.R;
+import com.matthias.android.amginori.persistence.SharedPreferencesHelper;
 
 import java.util.List;
 
@@ -70,6 +71,7 @@ public class CardListFragment extends Fragment {
                 public void onClick(View v) {
                     CardLibrary.get(getActivity()).deleteCard(mCard);
                     updateUI();
+                    SharedPreferencesHelper.get(getActivity()).remove("SavedGameValid");
                     mToast.setText(getString(R.string.text_card_deleted, mCard.mFront, mCard.mBack));
                     mToast.show();
                 }
