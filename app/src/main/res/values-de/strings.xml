@@ -15,6 +15,7 @@
     <string name="option_easy">Einfach</string>
     <string name="option_hard">Schwer</string>
 
+    <string name="text_card_added">1 Karte hinzugefügt.</string>
     <string name="text_card_deleted">Karte (%1$s, %2$s) gelöscht.</string>
     <string name="text_confirm_clear_cards">Sind Sie sicher, dass Sie alle Ihre Karten löschen möchten?</string>
     <string name="text_game_over">"Game Over!"</string>
@@ -22,7 +23,7 @@
     <string name="text_install_file_manager">Bitte installieren Sie einen Dateimanager.</string>
     <string name="text_invalid_anki_package">Gewählte Datei ist kein gültiges Anki Paket.</string>
     <string name="text_loading">Loading…</string>
-    <string name="text_card_added">1 Karte hinzugefügt.</string>
+    <string name="text_select_front_and_back">Wähle Vorder- und Rückseite</string>
 
     <string name="answer">Antwort</string>
     <string name="available">verfügbar</string>

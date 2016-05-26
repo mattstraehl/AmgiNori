@@ -3,7 +3,6 @@ package com.matthias.android.amginori.fragments;
 import android.Manifest;
 import android.app.Activity;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -37,12 +36,16 @@ import com.matthias.android.amginori.persistence.AnkiPackageImporter;
 import com.matthias.android.amginori.persistence.SharedPreferencesHelper;
 
 import java.io.File;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 public class MainFragment extends Fragment {
 
-    private static final int FILE_SELECT_CODE = 0;
+    private static final int SELECT_FILE_CODE = 0;
     private static final int REQUEST_READ_EXTERNAL_STORAGE_CODE = 1;
     private static final int CLEAR_CARDS_CONFIRMATION_DIALOG_CODE = 2;
+    private static final int SELECT_MODEL_FIELDS_CODE = 3;
 
     private Level mLevel = Level.EASY;
 
@@ -55,6 +58,9 @@ public class MainFragment extends Fragment {
 
     private ProgressDialog mProgressDialog;
     private boolean mIsImportTaskRunning = false;
+
+    private Map<String, String[]> mCollectionModels;
+    private final Map<String, Integer[]> mModelFieldIndexes = new HashMap<>();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -206,17 +212,26 @@ public class MainFragment extends Fragment {
         if (resultCode != Activity.RESULT_OK) {
             return;
         }
-        if (requestCode == FILE_SELECT_CODE) {
+        if (requestCode == SELECT_FILE_CODE) {
             mUri = data.getData();
             mIsImportTaskRunning = true;
             mProgressDialog.show();
-            new ImportTask().execute(mUri);
+            new ImportCollectionTask().execute(mUri);
         } else if (requestCode == CLEAR_CARDS_CONFIRMATION_DIALOG_CODE) {
             SharedPreferencesHelper.get(getActivity()).remove("CollectionName");
             getActivity().getApplicationContext().deleteDatabase(Anki2DbHelper.DATABASE_NAME);
             CardLibrary.get(getActivity()).refresh();
             invalidateSavedGame();
             updateUI();
+        } else if (requestCode == SELECT_MODEL_FIELDS_CODE) {
+            Object[] indexes = data.getIntegerArrayListExtra(ModelFieldDialogFragment.MODEL_FIELD_INDEXES).toArray();
+            mModelFieldIndexes.put(data.getStringExtra(ModelFieldDialogFragment.MODEL_ID),
+                    Arrays.copyOf(indexes, indexes.length, Integer[].class));
+            if (mCollectionModels.size() == mModelFieldIndexes.size()) {
+                new CopyCollectionTask().execute();
+            } else {
+                createModelFieldDialog();
+            }
         }
     }
 
@@ -232,7 +247,7 @@ public class MainFragment extends Fragment {
     @Override
     public void onDetach() {
         super.onDetach();
-        if (mProgressDialog != null && mProgressDialog.isShowing()) {
+        if (mProgressDialog.isShowing()) {
             mProgressDialog.dismiss();
         }
     }
@@ -242,7 +257,7 @@ public class MainFragment extends Fragment {
         intent.setType("application/apkg");
         intent.addCategory(Intent.CATEGORY_OPENABLE);
         try {
-            startActivityForResult(Intent.createChooser(intent, null), FILE_SELECT_CODE);
+            startActivityForResult(Intent.createChooser(intent, null), SELECT_FILE_CODE);
         } catch (android.content.ActivityNotFoundException ex) {
             Toast.makeText(getActivity(), R.string.text_install_file_manager, Toast.LENGTH_LONG).show();
         }
@@ -261,28 +276,58 @@ public class MainFragment extends Fragment {
         SharedPreferencesHelper.get(getActivity()).remove("SavedGameValid");
     }
 
-    private class ImportTask extends AsyncTask<Uri, Void, Integer> {
+    private void createModelFieldDialog() {
+        Map.Entry<String, String[]> entry = (Map.Entry<String, String[]>) mCollectionModels.entrySet().toArray()[mModelFieldIndexes.size()];
+        FragmentManager manager = getFragmentManager();
+        ModelFieldDialogFragment dialog = ModelFieldDialogFragment.newInstance(entry.getKey(), entry.getValue());
+        dialog.setTargetFragment(this, SELECT_MODEL_FIELDS_CODE);
+        dialog.setCancelable(false);
+        dialog.show(manager, "dialog");
+    }
+
+    private class ImportCollectionTask extends AsyncTask<Uri, Void, Boolean> {
 
         @Override
-        protected Integer doInBackground(Uri... uris) {
-            return AnkiPackageImporter.importAnkiPackage(getActivity(), Anki2DbHelper.DATABASE_NAME, uris[0]);
+        protected Boolean doInBackground(Uri... params) {
+            return AnkiPackageImporter.importAnkiPackage(getActivity(), Anki2DbHelper.DATABASE_NAME, params[0]);
+        }
+
+        @Override
+        protected void onPostExecute(Boolean result) {
+            if (!result || !new Anki2DbHelper(getActivity()).requiredTablesExist()) {
+                mProgressDialog.dismiss();
+                mIsImportTaskRunning = false;
+                Toast.makeText(getActivity(), R.string.text_invalid_anki_package, Toast.LENGTH_LONG).show();
+            } else {
+                mCollectionModels = new Anki2DbHelper(getActivity()).getCollectionModels();
+                if (mCollectionModels.isEmpty()) {
+                    new CopyCollectionTask().execute();
+                } else {
+                    createModelFieldDialog();
+                }
+            }
+        }
+    }
+
+    private class CopyCollectionTask extends AsyncTask<Void, Void, Integer> {
+
+        private final Anki2DbHelper mDatabase = new Anki2DbHelper(getActivity());
+
+        @Override
+        protected Integer doInBackground(Void... params) {
+            return mDatabase.copyCardsOfAnkiCollection(mModelFieldIndexes);
         }
 
         @Override
         protected void onPostExecute(Integer result) {
-            if (result != -1) {
-                CardLibrary.get(getActivity()).refresh();
-                persistCollectionName(mUri);
-                invalidateSavedGame();
-                updateUI();
-                String cardsImported = getResources().getQuantityString(R.plurals.numberOfCardsImported, result, result);
-                Toast.makeText(getActivity(), cardsImported, Toast.LENGTH_LONG).show();
-            } else {
-                Toast.makeText(getActivity(), R.string.text_invalid_anki_package, Toast.LENGTH_LONG).show();
-            }
-            if (mProgressDialog != null) {
-                mProgressDialog.dismiss();
-            }
+            CardLibrary.get(getActivity()).refresh();
+            persistCollectionName(mUri);
+            invalidateSavedGame();
+            updateUI();
+            String cardsImported = getResources().getQuantityString(R.plurals.numberOfCardsImported, result, result);
+            Toast.makeText(getActivity(), cardsImported, Toast.LENGTH_LONG).show();
+            mModelFieldIndexes.clear();
+            mProgressDialog.dismiss();
             mIsImportTaskRunning = false;
         }
 

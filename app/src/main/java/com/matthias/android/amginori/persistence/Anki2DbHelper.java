@@ -10,11 +10,18 @@ import android.text.Html;
 import com.matthias.android.amginori.Card;
 import com.matthias.android.amginori.CardLibrary;
 import com.matthias.android.amginori.persistence.Anki2DbSchema.AmgiNoriCardsTable;
+import com.matthias.android.amginori.persistence.Anki2DbSchema.ColTable;
 import com.matthias.android.amginori.persistence.Anki2DbSchema.NotesTable;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.File;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 public final class Anki2DbHelper extends SQLiteOpenHelper {
 
@@ -107,11 +114,50 @@ public final class Anki2DbHelper extends SQLiteOpenHelper {
         return result;
     }
 
-    public int copyCardsOfAnkiCollection() {
-        if (!databaseExists() || !tableExists(NotesTable.NAME)) {
-            return -1;
-        }
+    public boolean requiredTablesExist() {
+        return databaseExists() && tableExists(NotesTable.NAME) && tableExists(ColTable.NAME);
+    }
 
+    public Map<String, String[]> getCollectionModels() {
+        SQLiteDatabase database = this.getReadableDatabase();
+
+        // Get all model ids
+        List<String> modelIds = new LinkedList<>();
+        Cursor cursor = database.rawQuery("SELECT DISTINCT " + NotesTable.Cols.MID + " FROM " + NotesTable.NAME, null);
+        if (cursor.moveToFirst()) {
+            do {
+                modelIds.add(cursor.getString(0));
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+
+        // Get lists of model fields
+        Map<String, String[]> result = new HashMap<>();
+        cursor = database.rawQuery("SELECT " + ColTable.Cols.MODELS + " FROM " + ColTable.NAME, null);
+        if (cursor.moveToFirst()) {
+            try {
+                JSONObject collection = new JSONObject(cursor.getString(0));
+                for (String modelId : modelIds) {
+                    JSONArray flds = collection.getJSONObject(modelId).getJSONArray("flds");
+                    if (flds.length() > 2) {
+                        String[] modelFields = new String[flds.length()];
+                        for (int i = 0; i < flds.length(); i++) {
+                            modelFields[i] = flds.getJSONObject(i).getString("name");
+                        }
+                        result.put(modelId, modelFields);
+                    }
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        cursor.close();
+
+        database.close();
+        return result;
+    }
+
+    public int copyCardsOfAnkiCollection(Map<String, Integer[]> modelFieldIndexes) {
         SQLiteDatabase database = this.getWritableDatabase();
 
         // Copy existing cards
@@ -122,18 +168,21 @@ public final class Anki2DbHelper extends SQLiteOpenHelper {
             }
         }
 
-        // Copy newly imported cards
+        // Copy newly imported collection
         Cursor cursor = database.rawQuery("SELECT " + NotesTable.Cols.FLDS
-                + " FROM " + NotesTable.NAME, null);
-
+                + ", " + NotesTable.Cols.MID + " FROM " + NotesTable.NAME, null);
         int count = 0;
         if (cursor.moveToFirst()) {
             do {
                 String card = cursor.getString(0);
                 String[] fields = card.split(NotesTable.FIELD_SEPARATOR, -1);
+                Integer[] indexes = modelFieldIndexes.get(cursor.getString(1));
+                if (indexes == null) {
+                    indexes = new Integer[]{0, 1};
+                }
                 // Strip all formatting and media path information
-                String front = fields[0].replaceAll(IMAGE_PATH_REGEX, "").replaceAll(SOUND_PATH_REGEX, "");
-                String back = fields[1].replaceAll(IMAGE_PATH_REGEX, "").replaceAll(SOUND_PATH_REGEX, "");
+                String front = fields[indexes[0]].replaceAll(IMAGE_PATH_REGEX, "").replaceAll(SOUND_PATH_REGEX, "");
+                String back = fields[indexes[1]].replaceAll(IMAGE_PATH_REGEX, "").replaceAll(SOUND_PATH_REGEX, "");
                 front = Html.fromHtml(front).toString();
                 back = Html.fromHtml(back).toString();
                 if (!front.isEmpty() && !back.isEmpty()) {

@@ -15,6 +15,7 @@
     <string name="option_easy">Easy</string>
     <string name="option_hard">Hard</string>
 
+    <string name="text_card_added">1 card added.</string>
     <string name="text_card_deleted">Card (%1$s, %2$s) deleted.</string>
     <string name="text_confirm_clear_cards">Are you sure you want to delete all your cards?</string>
     <string name="text_game_over">"Game Over!"</string>
@@ -22,7 +23,7 @@
     <string name="text_install_file_manager">Please install a File Manager.</string>
     <string name="text_invalid_anki_package">Selected file is not a valid Anki Package.</string>
     <string name="text_loading">Loading…</string>
-    <string name="text_card_added">1 card added.</string>
+    <string name="text_select_front_and_back">Select Front and Back sides</string>
 
     <string name="answer">Answer</string>
     <string name="available">available</string>

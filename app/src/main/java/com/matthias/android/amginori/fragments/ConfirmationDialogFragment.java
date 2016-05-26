@@ -11,7 +11,7 @@ import com.matthias.android.amginori.R;
 
 public class ConfirmationDialogFragment extends DialogFragment {
 
-    private static final String TEXT_ID = "textId";
+    private static final String TEXT_ID = "TextId";
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {

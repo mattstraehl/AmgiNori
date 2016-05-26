@@ -15,6 +15,7 @@
     <string name="option_easy">쉬운 게임</string>
     <string name="option_hard">어려운 게임</string>
 
+    <string name="text_card_added">단어장이 입력됨</string>
     <string name="text_card_deleted">단어장 (%1$s, %2$s) 삭제됨</string>
     <string name="text_confirm_clear_cards">저장된 모든 단어장이 삭제됩니다. 진행하시겠습니까?</string>
     <string name="text_game_over">"게임 종료!"</string>
@@ -22,7 +23,7 @@
     <string name="text_install_file_manager">파일관리자/파일탐색기를 설치하세요.</string>
     <string name="text_invalid_anki_package">선택하신 파일은 지원되지 않는 파일입니다.</string>
     <string name="text_loading">로딩중…</string>
-    <string name="text_card_added">단어장이 입력됨</string>
+    <string name="text_select_front_and_back">앞면하고 뒷면을 선택하십시오</string>
 
     <string name="answer">뜻</string>
     <string name="available">저장된</string>
