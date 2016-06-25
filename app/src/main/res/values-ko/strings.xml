@@ -23,7 +23,7 @@
     <string name="text_install_file_manager">파일관리자/파일탐색기를 설치하세요.</string>
     <string name="text_invalid_anki_package">선택하신 파일은 지원되지 않는 파일입니다.</string>
     <string name="text_loading">로딩중…</string>
-    <string name="text_select_front_and_back">앞면하고 뒷면을 선택하십시오</string>
+    <string name="text_select_front_and_back">앞면과 뒷면을 선택하십시오</string>
 
     <string name="answer">뜻</string>
     <string name="available">저장된</string>
