@@ -254,7 +254,7 @@ public class MainFragment extends Fragment {
 
     private void displayFileChooser() {
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-        intent.setType("application/apkg");
+        intent.setType("application/*");
         intent.addCategory(Intent.CATEGORY_OPENABLE);
         try {
             startActivityForResult(Intent.createChooser(intent, null), SELECT_FILE_CODE);
