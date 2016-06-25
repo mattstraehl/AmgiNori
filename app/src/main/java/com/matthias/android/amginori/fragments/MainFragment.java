@@ -184,10 +184,10 @@ public class MainFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE)
-                        != PackageManager.PERMISSION_GRANTED) {
-                    requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_READ_EXTERNAL_STORAGE_CODE);
-                } else {
+                        == PackageManager.PERMISSION_GRANTED) {
                     displayFileChooser();
+                } else {
+                    requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_READ_EXTERNAL_STORAGE_CODE);
                 }
             }
         });
@@ -332,15 +332,25 @@ public class MainFragment extends Fragment {
         }
 
         private void persistCollectionName(Uri uri) {
-            String collectionName;
+            String collectionName = null;
             if ("content".equals(uri.getScheme())) {
-                Cursor cursor = getActivity().getContentResolver().query(uri, null, null, null, null);
-                int nameIndex = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
-                cursor.moveToFirst();
-                collectionName = cursor.getString(nameIndex);
-                cursor.close();
-            } else {
+                Cursor cursor = null;
+                try {
+                    cursor = getActivity().getContentResolver().query(uri, null, null, null, null);
+                    int nameIndex = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
+                    cursor.moveToFirst();
+                    collectionName = cursor.getString(nameIndex);
+                } catch (Exception e) {
+                } finally {
+                    if (cursor != null) {
+                        cursor.close();
+                    }
+                }
+            } else if ("file".equals(uri.getScheme())) {
                 collectionName = new File(uri.getPath()).getName();
+            }
+            if (collectionName == null) {
+                return;
             }
             int pos = collectionName.lastIndexOf(".");
             if (pos > 0) {
