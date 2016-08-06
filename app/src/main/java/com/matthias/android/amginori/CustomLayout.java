@@ -41,7 +41,6 @@ public class CustomLayout extends RelativeLayout {
 
     public CustomLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
-        //setWillNotDraw(false);
         mPaint.setColor(Color.WHITE);
         mPaint.setStyle(Paint.Style.STROKE);
         mPaint.setStrokeWidth(getResources().getDimensionPixelSize(R.dimen.stroke_width));
@@ -136,11 +135,6 @@ public class CustomLayout extends RelativeLayout {
         }
         canvas.drawPath(path, mPaint);
     }
-
-    /*@Override
-    public boolean onInterceptTouchEvent(MotionEvent event) {
-        return false;
-    }*/
 
     protected static Bitmap loadBitmapFromView(View view) {
         View v = ((ViewGroup) view).getChildAt(0);
