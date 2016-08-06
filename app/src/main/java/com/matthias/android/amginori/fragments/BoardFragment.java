@@ -111,6 +111,7 @@ public class BoardFragment extends Fragment implements TileUpdateRunnable.GameOv
         mBestScore = Math.max(latestScore, SharedPreferencesHelper.get(getActivity()).getInt("BestScore" + mLevel, 0));
         mScoreIncrement = Math.log(1 + CardLibrary.get(getActivity()).size());
         mScore = (int) (mMatchCount * mScoreIncrement);
+        CardLibrary.get(getActivity()).setCardPoolSize(mLevel.cardPoolSize);
     }
 
     @Override

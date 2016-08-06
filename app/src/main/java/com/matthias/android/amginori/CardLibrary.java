@@ -13,14 +13,13 @@ import java.util.List;
 
 public final class CardLibrary {
 
-    private static final int CARD_POOL_SIZE = 8;
-
     private static CardLibrary sCardLibrary;
 
     private List<Card> mCards = new ArrayList<>();
     private LinkedList<Card> mCardPool = new LinkedList<>();
 
     private int mSize = 0;
+    private int mCardPoolSize = Level.EASY.cardPoolSize;
 
     private Context mContext;
 
@@ -38,14 +37,14 @@ public final class CardLibrary {
 
     public Card nextCard(List<Card> cards) {
         if (mCardPool.isEmpty()) {
-            Card[] newCards = new Card[CARD_POOL_SIZE];
+            Card[] newCards = new Card[mCardPoolSize];
             // Insert cards in this order: [c_1, r_n, c_2, r_n-1, ... c_n-1, r_2, c_n, r_1]
             int offset = (int) (cards.size() * Math.random());
-            for (int i = 0; i < CARD_POOL_SIZE / 2; i++) {
+            for (int i = 0; i < mCardPoolSize / 2; i++) {
                 newCards[i * 2] = cards.get(offset++ % cards.size()).copy();
             }
-            for (int i = 0; i < CARD_POOL_SIZE / 2; i++) {
-                newCards[CARD_POOL_SIZE - 1 - (i * 2)] = newCards[i * 2].reversedCopy();
+            for (int i = 0; i < mCardPoolSize / 2; i++) {
+                newCards[mCardPoolSize - 1 - (i * 2)] = newCards[i * 2].reversedCopy();
             }
             Collections.addAll(mCardPool, newCards);
         }
@@ -106,5 +105,9 @@ public final class CardLibrary {
 
     public int size() {
         return mSize;
+    }
+
+    public void setCardPoolSize(int cardPoolSize) {
+        mCardPoolSize = cardPoolSize;
     }
 }
