@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.matthias.android.amginori.Tile xmlns:android="http://schemas.android.com/apk/res/android"
+    android:theme="@style/AppTheme"
     android:layout_width="wrap_content"
     android:layout_height="60dp"
     android:layout_marginLeft="1dp"
-    android:layout_marginRight="1dp" />
+    android:layout_marginRight="1dp"
+    android:textColor="@android:color/white" />
