@@ -16,8 +16,6 @@ public final class AnkiPackageImporter {
     private static final int FILE_COPY_BUFFER_SIZE = 2048;
 
     public static boolean importAnkiPackage(Context context, String dbName, Uri file) {
-        Anki2DbHelper database = new Anki2DbHelper(context);
-        database.getReadableDatabase();
         ZipInputStream in = null;
         OutputStream out = null;
         try {
@@ -54,7 +52,6 @@ public final class AnkiPackageImporter {
                 } catch (IOException e) {
                 }
             }
-            database.close();
         }
         return true;
     }
