@@ -7,9 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.text.Html;
 
-import com.matthias.android.amginori.Card;
-import com.matthias.android.amginori.CardLibrary;
-import com.matthias.android.amginori.persistence.Anki2DbSchema.AmgiNoriCardsTable;
+import com.matthias.android.amginori.persistence.AmgiNoriDbSchema.AmgiNoriCardsTable;
 import com.matthias.android.amginori.persistence.Anki2DbSchema.ColTable;
 import com.matthias.android.amginori.persistence.Anki2DbSchema.NotesTable;
 
@@ -25,23 +23,21 @@ import java.util.Map;
 
 public final class Anki2DbHelper extends SQLiteOpenHelper {
 
-    public static final String DATABASE_NAME = "CardCollection";
+    public static final String DATABASE_NAME = "Anki2DbImport";
     private static final int VERSION = 1;
 
     private static final String IMAGE_PATH_REGEX = "<img.*src=[\"'](.*)[\"'].*/?>";
     private static final String SOUND_PATH_REGEX = "\\[sound:(.*)\\]";
 
-    private final String DATABASE_PATH;
     private final Context mContext;
 
     public Anki2DbHelper(Context context) {
         super(context, DATABASE_NAME, null, VERSION);
-        DATABASE_PATH = context.getDatabasePath(DATABASE_NAME).getAbsolutePath();
         mContext = context;
     }
 
     private boolean databaseExists() {
-        return new File(DATABASE_PATH).exists();
+        return new File(mContext.getDatabasePath(DATABASE_NAME).getAbsolutePath()).exists();
     }
 
     private boolean tableExists(String table) {
@@ -57,61 +53,10 @@ public final class Anki2DbHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("create table " + AmgiNoriCardsTable.NAME + "("
-                        + AmgiNoriCardsTable.Cols.ID + " integer primary key autoincrement, "
-                        + AmgiNoriCardsTable.Cols.FRONT + " text not null, "
-                        + AmgiNoriCardsTable.Cols.BACK + " text not null)"
-        );
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-    }
-
-    public void addCard(String front, String back) {
-        SQLiteDatabase database = this.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put(AmgiNoriCardsTable.Cols.FRONT, front);
-        values.put(AmgiNoriCardsTable.Cols.BACK, back);
-        database.insert(AmgiNoriCardsTable.NAME, null, values);
-        database.close();
-    }
-
-    public void deleteCard(Card card) {
-        SQLiteDatabase database = this.getWritableDatabase();
-        String selection = AmgiNoriCardsTable.Cols.ID + " = ?";
-        String[] selectionArgs = {String.valueOf(card.mId)};
-        database.delete(AmgiNoriCardsTable.NAME, selection, selectionArgs);
-        database.close();
-    }
-
-    public List<Card> getAllCards() {
-        List<Card> result = new LinkedList<>();
-        if (!databaseExists() || !tableExists(AmgiNoriCardsTable.NAME)) {
-            return result;
-        }
-
-        SQLiteDatabase database = this.getReadableDatabase();
-        Cursor cursor = database.rawQuery("SELECT " + AmgiNoriCardsTable.Cols.ID
-                + ", " + AmgiNoriCardsTable.Cols.FRONT
-                + ", " + AmgiNoriCardsTable.Cols.BACK
-                + " FROM " + AmgiNoriCardsTable.NAME
-                + " ORDER BY " + AmgiNoriCardsTable.Cols.ID + " DESC", null);
-
-        Long id;
-        String front, back;
-        if (cursor.moveToFirst()) {
-            do {
-                id = cursor.getLong(0);
-                front = cursor.getString(1);
-                back = cursor.getString(2);
-                result.add(new Card(id, front, back));
-            } while (cursor.moveToNext());
-        }
-        cursor.close();
-        database.close();
-
-        return result;
     }
 
     public boolean requiredTablesExist() {
@@ -157,19 +102,12 @@ public final class Anki2DbHelper extends SQLiteOpenHelper {
         return result;
     }
 
-    public int copyCardsOfAnkiCollection(Map<String, Integer[]> modelFieldIndexes) {
-        SQLiteDatabase database = this.getWritableDatabase();
-
-        // Copy existing cards
-        if (CardLibrary.get(mContext).size() > 0) {
-            List<Card> cards = CardLibrary.get(mContext).getAllCards();
-            for (Card card : cards) {
-                insertCard(database, card.mFront, card.mBack);
-            }
-        }
+    public int copyCardsOfAnkiCollection(AmgiNoriDbHelper amgiNoriDbHelper, Map<String, Integer[]> modelFieldIndexes) {
+        SQLiteDatabase amgiNoriDb = amgiNoriDbHelper.getWritableDatabase();
+        SQLiteDatabase anki2Db = this.getReadableDatabase();
 
         // Copy newly imported collection
-        Cursor cursor = database.rawQuery("SELECT " + NotesTable.Cols.FLDS
+        Cursor cursor = anki2Db.rawQuery("SELECT " + NotesTable.Cols.FLDS
                 + ", " + NotesTable.Cols.MID + " FROM " + NotesTable.NAME, null);
         int count = 0;
         if (cursor.moveToFirst()) {
@@ -186,13 +124,14 @@ public final class Anki2DbHelper extends SQLiteOpenHelper {
                 front = Html.fromHtml(front).toString();
                 back = Html.fromHtml(back).toString();
                 if (!front.isEmpty() && !back.isEmpty()) {
-                    insertCard(database, front, back);
+                    insertCard(amgiNoriDb, front, back);
                     count++;
                 }
             } while (cursor.moveToNext());
         }
         cursor.close();
-        database.close();
+        anki2Db.close();
+        amgiNoriDb.close();
 
         return count;
     }

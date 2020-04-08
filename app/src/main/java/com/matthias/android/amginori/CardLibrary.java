@@ -2,7 +2,7 @@ package com.matthias.android.amginori;
 
 import android.content.Context;
 
-import com.matthias.android.amginori.persistence.Anki2DbHelper;
+import com.matthias.android.amginori.persistence.AmgiNoriDbHelper;
 import com.matthias.android.amginori.persistence.SharedPreferencesHelper;
 import com.matthias.android.amginori.utils.Base64;
 
@@ -67,19 +67,19 @@ public final class CardLibrary {
     }
 
     public void addCard(String front, String back) {
-        Anki2DbHelper database = new Anki2DbHelper(mContext);
+        AmgiNoriDbHelper database = new AmgiNoriDbHelper(mContext);
         database.addCard(front, back);
         refresh();
     }
 
     public void deleteCard(Card card) {
-        Anki2DbHelper database = new Anki2DbHelper(mContext);
+        AmgiNoriDbHelper database = new AmgiNoriDbHelper(mContext);
         database.deleteCard(card);
         refresh();
     }
 
     public void refresh() {
-        Anki2DbHelper database = new Anki2DbHelper(mContext);
+        AmgiNoriDbHelper database = new AmgiNoriDbHelper(mContext);
         mCards = database.getAllCards();
         if (mCards.isEmpty()) {
             mCards.add(new Card(mContext.getString(R.string.no_cards).toUpperCase(),

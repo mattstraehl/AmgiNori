@@ -31,6 +31,7 @@ import com.matthias.android.amginori.CardLibrary;
 import com.matthias.android.amginori.Level;
 import com.matthias.android.amginori.R;
 import com.matthias.android.amginori.activities.CardListActivity;
+import com.matthias.android.amginori.persistence.AmgiNoriDbHelper;
 import com.matthias.android.amginori.persistence.Anki2DbHelper;
 import com.matthias.android.amginori.persistence.AnkiPackageImporter;
 import com.matthias.android.amginori.persistence.SharedPreferencesHelper;
@@ -219,7 +220,7 @@ public class MainFragment extends Fragment {
             new ImportCollectionTask().execute(mUri);
         } else if (requestCode == CLEAR_CARDS_CONFIRMATION_DIALOG_CODE) {
             SharedPreferencesHelper.get(getActivity()).remove("CollectionName");
-            getActivity().getApplicationContext().deleteDatabase(Anki2DbHelper.DATABASE_NAME);
+            getActivity().getApplicationContext().deleteDatabase(AmgiNoriDbHelper.DATABASE_NAME);
             CardLibrary.get(getActivity()).refresh();
             invalidateSavedGame();
             updateUI();
@@ -311,11 +312,12 @@ public class MainFragment extends Fragment {
 
     private class CopyCollectionTask extends AsyncTask<Void, Void, Integer> {
 
-        private final Anki2DbHelper mDatabase = new Anki2DbHelper(getActivity());
+        private final Anki2DbHelper mAnki2Db = new Anki2DbHelper(getActivity());
+        private final AmgiNoriDbHelper mAmgiNoriDb = new AmgiNoriDbHelper(getActivity());
 
         @Override
         protected Integer doInBackground(Void... params) {
-            return mDatabase.copyCardsOfAnkiCollection(mModelFieldIndexes);
+            return mAnki2Db.copyCardsOfAnkiCollection(mAmgiNoriDb, mModelFieldIndexes);
         }
 
         @Override
